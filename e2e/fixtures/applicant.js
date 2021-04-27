@@ -12,7 +12,7 @@ module.exports = {
     townCity: 'Swansea',
     county: 'Swansea',
     country: 'United Kingdom',
-    postcode: 'CR0 2GE',
+    postCode: 'CR0 2GE',
   },
   mobileNumber: '07000000000',
   telephoneNumber: '00000000000',

@@ -65,9 +65,6 @@ const setupConfig = {
     DumpBrowserLogsHelper: {
       require: './e2e/helpers/dump_browser_logs_helper.js',
     },
-    TabAssertions: {
-      require: './e2e/helpers/tab_assertions_helper.js',
-    },
   },
   plugins: {
     retryFailedStep: {

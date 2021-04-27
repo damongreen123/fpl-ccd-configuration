@@ -40,14 +40,12 @@ const supportingDoc = {name: 'case summary', notes: 'this is the case summary', 
 
 let caseId;
 let today;
-let date;
 
 Feature('Upload Draft Orders Journey');
 
 BeforeSuite(async ({I}) => {
   caseId = await I.submitNewCaseWithData(standardDirectionOrder);
   today = new Date();
-  date = dateFormat(today, 'd mmm yyyy');
 });
 
 Scenario('Local authority uploads draft orders', async ({I, caseViewPage, uploadCaseManagementOrderEventPage}) => {
@@ -78,8 +76,8 @@ Scenario('Local authority uploads draft orders', async ({I, caseViewPage, upload
   I.seeInTab(['Further evidence documents for hearings 1', 'Documents 1', 'Document name'], supportingDoc.name);
   I.seeInTab(['Further evidence documents for hearings 1', 'Documents 1', 'Notes'], supportingDoc.notes);
   I.seeInTab(['Further evidence documents for hearings 1', 'Documents 1', 'File'], supportingDoc.fileName);
-  I.seeInTab(['Further evidence documents for hearings 1', 'Date and time uploaded'], date);
-  I.seeInTab(['Further evidence documents for hearings 1', 'Uploaded by'], 'kurt@swansea.gov.uk');
+  I.seeInTab(['Further evidence documents for hearings 1', 'Date and time uploaded', dateFormat(today, 'd mmm yyyy')]);
+  I.seeInTab(['Further evidence documents for hearings 1', 'Uploaded by', 'kurt@swansea.gov.uk']);
 });
 
 Scenario('Respondent solicitor uploads draft orders', async ({I, caseViewPage, enterRepresentativesEventPage, uploadCaseManagementOrderEventPage}) => {
@@ -231,7 +229,7 @@ const assertDraftOrders = function (I, collectionId, hearingName, orders, title,
     I.seeInTab([hearing, draft, 'Title'], order.title);
     I.seeInTab([hearing, draft, 'Order'], 'mockFile.docx');
     I.seeInTab([hearing, draft, 'Status'], order.status);
-    I.seeInTab([hearing, draft, 'Date sent'], date);
+    I.seeInTab([hearing, draft, 'Date sent'], dateFormat(today, 'd mmm yyyy'));
 
     if (order.status === returnedStatus) {
       I.seeInTab([hearing, draft, 'Changes requested by judge'], changeRequestReason);
@@ -250,7 +248,7 @@ const assertSealedCMO = (I, collectionId, hearingName) => {
 
   I.seeInTab([sealedCMO, 'Order'], 'mockFile.pdf');
   I.seeInTab([sealedCMO, 'Hearing'], hearingName);
-  I.seeInTab([sealedCMO, 'Date issued'], date);
+  I.seeInTab([sealedCMO, 'Date issued'], dateFormat(today, 'd mmm yyyy'));
   I.seeInTab([sealedCMO, 'Judge'], 'Her Honour Judge Reed');
 };
 
