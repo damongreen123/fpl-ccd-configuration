@@ -13,10 +13,20 @@ const operations = {
 const orders = {
   group: '#manageOrdersType',
   options: {
+    c21: 'C21_BLANK_ORDER',
     c32: 'C32_CARE_ORDER',
     c23: 'C23_EMERGENCY_PROTECTION_ORDER',
-    c21: 'C21_BLANK_ORDER',
+    c33: 'C33_INTERIM_CARE_ORDER',
+    c35b: 'C35A_INTERIM_SUPERVISION_ORDER',
     c35a: 'C35A_SUPERVISION_ORDER',
+  },
+  title: {
+    c21: 'Blank order (C21)',
+    c32: 'Care order (C32)',
+    c23: 'Emergency protection order (C23)',
+    c33: 'Interim care order (C33)',
+    c35b: 'Interim supervision Order (C35b)',
+    c35a: 'Supervision Order (C35a)',
   },
 };
 
@@ -36,6 +46,9 @@ const section3 = {
   },
   childSelector: {
     selector: index => `#childSelector_option${index}`,
+  },
+  children: {
+    child1: 'Timothy Jones',
   },
 };
 
@@ -72,6 +85,14 @@ const section4 = {
       numberOfMonths: 'SET_NUMBER_OF_MONTHS',
     },
   },
+  interimCareOrderEndType: {
+    group: '#manageInterimCareOrderEndTypee',
+    options: {
+      calendarDay: 'SET_CALENDAR_DAY',
+      calendarDayAndTime: 'SET_CALENDAR_DAY_AND_TIME',
+      endOfProceedings: 'SET_END_OF_PROCEEDINGS',
+    },
+  },
   whoIsExcluded: '#manageOrdersWhoIsExcluded',
   exclusionStartDate: '#manageOrdersExclusionStartDate',
   powerOfArrest: '#manageOrdersPowerOfArrest',
@@ -79,6 +100,7 @@ const section4 = {
   supervisionOrderEndDate: '#manageOrdersEndDateTime',
   supervisionOrderEndDateAndTime: '#manageOrdersSetDateAndTimeEndDate',
   supervisionOrderNumOfMonths: '#manageOrdersSetMonthsEndDate',
+  exclusionRequirementDetails: '#exclusionRequirementDetails',
 };
 
 const preview = {
@@ -185,8 +207,17 @@ const selectSupervisionOrder = async (orderDateType) => {
   I.click(`${section4.supervisionOrderType.group}-${orderDateType}`);
 };
 
+const selectInterimCareOrderEndType = async (orderDateType) => {
+  I.click(`${section4.interimCareOrderEndType.group}-${orderDateType}`);
+};
+
 const enterFurtherDirections = async (text) => {
   I.fillField(section4.furtherDirections, text);
+  await I.runAccessibilityTest();
+};
+
+const enterExclusionRequirementDetails = async (text) => {
+  I.fillField(section4.exclusionRequirementDetails, text);
   await I.runAccessibilityTest();
 };
 
@@ -201,5 +232,5 @@ module.exports = {
   enterFurtherDirections, checkPreview, enterApprovalDateTime, selectEpoType, selectIncludePhrase, enterEPOEndDateTime,
   enterRemovalAddress, selectExclusionRequirement, enterWhoIsExcluded, enterExclusionStartDate, uploadPowerOfArrest,
   selectSupervisionType, enterSuperVisionOrderEndDate, enterSuperVisionOrderEndDateAndTime, enterSuperVisionNumOfMonths,
-  selectSupervisionOrder,
+  selectSupervisionOrder, enterExclusionRequirementDetails, selectInterimCareOrderEndType,
 };
