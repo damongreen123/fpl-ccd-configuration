@@ -33,7 +33,7 @@ public class OrderDocumentGenerator {
         DocmosisParameters docmosisParameters = Optional.ofNullable(documentGenerator)
             .map(generator -> {
                 DocmosisParameters customParameters = generator.generate(caseData);
-                return decorator.decorate(customParameters, caseData, orderStatus, generator.accept());
+                return decorator.decorate(customParameters, caseData, orderStatus);
             })
             .orElseThrow(() -> new UnsupportedOperationException("Not implemented yet for order " + orderType.name()));
 

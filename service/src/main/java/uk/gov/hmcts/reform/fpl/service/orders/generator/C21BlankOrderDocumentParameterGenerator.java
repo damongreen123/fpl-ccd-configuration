@@ -16,7 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
-public class C21BlankOrderDocumentParameterGenerator implements DocmosisParameterGenerator {
+public class C21BlankOrderDocumentParameterGenerator implements NewDocmosisParameterGenerator<C21BlankOrderDocmosisParameters.C21BlankOrderDocmosisParametersBuilder> {
 
     private static final GeneratedOrderType TYPE = GeneratedOrderType.BLANK_ORDER;
 
@@ -28,17 +28,22 @@ public class C21BlankOrderDocumentParameterGenerator implements DocmosisParamete
     }
 
     @Override
-    public DocmosisParameters generate(CaseData caseData) {
+    public C21BlankOrderDocmosisParameters.C21BlankOrderDocmosisParametersBuilder initialiseDocmosisParameterBuilder() {
+        return C21BlankOrderDocmosisParameters.builder();
+    }
+
+    @Override
+    public DocmosisParameters runOrderSpecificTransformations(C21BlankOrderDocmosisParameters.C21BlankOrderDocmosisParametersBuilder docmosisParametersBuilder, CaseData caseData) {
         ManageOrdersEventData eventData = caseData.getManageOrdersEventData();
 
         String localAuthorityCode = caseData.getCaseLocalAuthority();
         String localAuthorityName = laNameLookup.getLocalAuthorityName(localAuthorityCode);
 
-        return C21BlankOrderDocmosisParameters.builder()
-            .orderTitle(getOrderTitle(caseData))
+        return docmosisParametersBuilder
             .orderType(TYPE)
             .orderDetails(eventData.getManageOrdersDirections())
             .localAuthorityName(localAuthorityName)
+            .orderTitle(getOrderTitle(caseData))
             .build();
     }
 

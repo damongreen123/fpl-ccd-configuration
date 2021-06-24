@@ -9,7 +9,6 @@ import uk.gov.hmcts.reform.fpl.model.common.JudgeAndLegalAdvisor;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisChild;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisJudgeAndLegalAdvisor;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
-import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.CaseDataExtractionService;
 import uk.gov.hmcts.reform.fpl.service.ChildrenService;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.C32CareOrderDocmosisParameters;
@@ -36,7 +35,6 @@ class DocmosisCommonElementDecoratorTest {
     private static final String COURT_NAME = "Court Name";
     private static final String FAM_MAN_CASE_NUM = "case number";
     private static final String TITLE = "Order title";
-    private static final String CHILDREN_ACT = "Children act for order";
     private static final String CREST = "[userImage:crest.png]";
     private static final String WATERMARK = "[userImage:draft-watermark.png]";
     private static final String SEAL = "[userImage:familycourtseal.png]";
@@ -47,7 +45,6 @@ class DocmosisCommonElementDecoratorTest {
     private static final List<Element<Child>> CHILDREN = wrapElements(mock(Child.class));
     private static final List<DocmosisChild> DOCMOSIS_CHILDREN = List.of(mock(DocmosisChild.class));
     private static final DocmosisParameters DOCMOSIS_PARAMETERS = C32CareOrderDocmosisParameters.builder().build();
-    private static final Order ORDER_TYPE = mock(Order.class);
     private static final CaseData CASE_DATA = CaseData.builder()
         .familyManCaseNumber(FAM_MAN_CASE_NUM)
         .id(CASE_NUMBER)
@@ -70,14 +67,11 @@ class DocmosisCommonElementDecoratorTest {
         when(extractionService.getJudgeAndLegalAdvisor(JUDGE)).thenReturn(DOCMOSIS_JUDGE);
         when(childrenService.getSelectedChildren(CASE_DATA)).thenReturn(CHILDREN);
         when(extractionService.getChildrenDetails(CHILDREN)).thenReturn(DOCMOSIS_CHILDREN);
-
-        when(ORDER_TYPE.getTitle()).thenReturn(TITLE);
-        when(ORDER_TYPE.getChildrenAct()).thenReturn(CHILDREN_ACT);
     }
 
     @Test
     void decorateDraft() {
-        DocmosisParameters decorated = underTest.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, DRAFT, ORDER_TYPE);
+        DocmosisParameters decorated = underTest.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, DRAFT);
         DocmosisParameters expectedParameters = expectedCommonParameters(EXPECTED_APPROVAL_DATE)
             .draftbackground(WATERMARK)
             .build();
@@ -87,7 +81,7 @@ class DocmosisCommonElementDecoratorTest {
 
     @Test
     void decorateSealed() {
-        DocmosisParameters decorated = underTest.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, SEALED, ORDER_TYPE);
+        DocmosisParameters decorated = underTest.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, SEALED);
         DocmosisParameters expectedParameters = expectedCommonParameters(EXPECTED_APPROVAL_DATE)
             .courtseal(SEAL)
             .build();
@@ -105,7 +99,7 @@ class DocmosisCommonElementDecoratorTest {
             .build();
 
         DocmosisParameters decorated = underTest.decorate(
-            docmosisParametersWithIssueDate, CASE_DATA, SEALED, ORDER_TYPE);
+            docmosisParametersWithIssueDate, CASE_DATA, SEALED);
 
         DocmosisParameters expectedParameters = expectedCommonParameters(expectedDateOfIssue)
             .courtseal(SEAL)
@@ -120,11 +114,11 @@ class DocmosisCommonElementDecoratorTest {
         return C32CareOrderDocmosisParameters.builder()
             .familyManCaseNumber(FAM_MAN_CASE_NUM)
             .ccdCaseNumber(FORMATTED_CASE_NUMBER)
-            .childrenAct(CHILDREN_ACT)
             .judgeAndLegalAdvisor(DOCMOSIS_JUDGE)
             .courtName(COURT_NAME)
             .dateOfIssue(dateOfIssue)
             .children(DOCMOSIS_CHILDREN)
             .crest(CREST);
     }
+
 }

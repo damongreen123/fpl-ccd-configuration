@@ -39,7 +39,7 @@ public enum Order {
     C21_BLANK_ORDER(
         DIGITAL,
         "Blank order",
-        "Section 31 Children Act 1989",
+        "Section 31 Children Act 198",
         "C21 - Blank order",
         IsFinalOrder.NO,
         List.of(LINKED_TO_HEARING, LINK_APPLICATION, APPROVER,

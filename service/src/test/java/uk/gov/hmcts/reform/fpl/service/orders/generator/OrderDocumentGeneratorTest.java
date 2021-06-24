@@ -60,7 +60,7 @@ class OrderDocumentGeneratorTest {
         when(generator.accept()).thenReturn(ORDER);
         when(generator.generate(CASE_DATA)).thenReturn(DOCMOSIS_PARAMETERS);
         when(generator.template()).thenReturn(DOCMOSIS_TEMPLATE);
-        when(decorator.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, STATUS, ORDER)).thenReturn(DOCMOSIS_PARAMETERS);
+        when(decorator.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, STATUS)).thenReturn(DOCMOSIS_PARAMETERS);
         when(objectMapper.convertValue(
             eq(DOCMOSIS_PARAMETERS),
             Mockito.<TypeReference<Map<String, Object>>>any())).thenReturn(TEMPLATE_DATA);
