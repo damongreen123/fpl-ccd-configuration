@@ -57,4 +57,5 @@ public class C21BlankOrderDocumentParameterGenerator implements NewDocmosisParam
         String orderTitle = eventData.getManageOrdersTitle();
         return isBlank(orderTitle) ? "Order" : orderTitle;
     }
+
 }

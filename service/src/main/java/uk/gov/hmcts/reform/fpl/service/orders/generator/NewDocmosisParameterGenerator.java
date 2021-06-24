@@ -10,8 +10,6 @@ public interface NewDocmosisParameterGenerator<T extends DocmosisParameters.Docm
     Order accept();
 
     default DocmosisParameters generate(CaseData caseData) {//TODO - how to not allow child classes to implement this
-//        Class<T> clazz = null;
-//        T t = clazz.getDeclaredConstructor().newInstance();//TODO - I want to instantiate this from generic -
         T docmosisParametersBuilder = initialiseDocmosisParameterBuilder();
 
         docmosisParametersBuilder
