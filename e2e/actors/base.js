@@ -39,9 +39,9 @@ module.exports = {
         }
 
         await this.retryUntilExists(() =>  loginPage.signIn(user), signedInSelector, false, 10);
-
       }, signedInSelector, false, 10);
       output.debug(`Logged in as ${user.email}`);
+      await this.acceptCookies();
       currentUser = user;
     } else {
       output.debug(`Already logged in as ${user.email}`);
@@ -70,6 +70,13 @@ module.exports = {
         this.click('Sign in');
         this.click('Yes');
       });
+    }
+  },
+
+  async acceptCookies() {
+    const acceptCookieSelector = '//button[@name="cookies"]';
+    if (await this.hasSelector(acceptCookieSelector)) {
+      this.click(acceptCookieSelector);
     }
   },
 

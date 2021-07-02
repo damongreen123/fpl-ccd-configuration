@@ -49,6 +49,7 @@ exports.config = {
         ignoreHTTPSErrors: true,
         args: process.env.PROXY_SERVER ? [
           `--proxy-server=${process.env.PROXY_SERVER}`,
+          '--disable-web-security',
         ] : [],
         devtools: process.env.SHOW_BROWSER_WINDOW || false,
       },
