@@ -1,0 +1,22 @@
+[
+  {
+    "LiveFrom": "01/01/2017",
+    "CaseTypeID": "CARE_SUPERVISION_EPO",
+    "CaseEventID": "addOrRemoveLegalCounsel",
+    "CaseFieldID": "addOrRemoveLegalCounselLabel",
+    "PageFieldDisplayOrder": 1,
+    "DisplayContext": "READONLY",
+    "PageID": "addOrRemoveLegalCounselLabel",
+    "PageDisplayOrder": 1
+  },
+  {
+    "LiveFrom": "01/01/2017",
+    "CaseTypeID": "CARE_SUPERVISION_EPO",
+    "CaseEventID": "addOrRemoveLegalCounsel",
+    "CaseFieldID": "addOrRemoveLegalCounselListOfCounsellors",
+    "PageFieldDisplayOrder": 1,
+    "DisplayContext": "READONLY",
+    "PageID": "addOrRemoveLegalCounselDetails",
+    "PageDisplayOrder": 1
+  }
+]

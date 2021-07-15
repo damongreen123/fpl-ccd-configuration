@@ -33,6 +33,20 @@ async function setupScenario(I, caseViewPage, noticeOfChangePage, submitApplicat
 
 Scenario('MyTest', async ({I, caseViewPage, noticeOfChangePage, submitApplicationEventPage}) => {//TODO - change title
   await setupScenario(I, caseViewPage, noticeOfChangePage, submitApplicationEventPage);
+
+  await caseViewPage.goToNewActions(config.applicationActions.addOrRemoveLegalCounsel);
+  await I.goToNextPage();//TODO - we might not need await here
+  I.see('Add or remove legal counsel');
+  I.see('Use this feature to add or remove a legal representative');
+  await I.goToNextPage();//TODO - we might not need await here
+  I.see('Add or remove legal counsel');
+  //TODO - add one, then add another
+  I.fillField('First name', 'Ted');
+  I.fillField('Last name', 'Robertson');
+  //TODO - carry on
+  await I.completeEvent('Save and continue');
+
+  I.seeEventSubmissionConfirmation(config.applicationActions.manageLegalRepresentatives);
 });
 
 const assertRepresentative = (I, user, organisation, index = 1) => {

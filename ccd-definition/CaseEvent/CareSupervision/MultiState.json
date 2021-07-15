@@ -775,9 +775,9 @@
   {
     "LiveFrom": "01/01/2017",
     "CaseTypeID": "CARE_SUPERVISION_EPO",
-    "ID": "addOrRemoveLegalCouncil",
-    "Name": "Add or remove legal council",
-    "Description": "Add or remove legal council",
+    "ID": "addOrRemoveLegalCounsel",
+    "Name": "Add or remove legal counsel",
+    "Description": "Add or remove legal counsel",
     "DisplayOrder": 11,
     "PreConditionState(s)": "*",
     "PostConditionState": "*",
