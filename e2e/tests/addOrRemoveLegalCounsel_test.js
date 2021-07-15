@@ -5,33 +5,36 @@ const mandatoryWithMultipleRespondents = require('../fixtures/caseData/mandatory
 
 const solicitor1 = config.privateSolicitorOne;
 
-let caseId;
+let caseId = 1626347681492408;//TODO - undo
 
 Feature('Representative Barristers');
 
-async function setupScenario(I, caseViewPage, noticeOfChangePage, submitApplicationEventPage) {
+async function setupScenario(I) {//TODO - undo
+// async function setupScenario(I, caseViewPage, noticeOfChangePage, submitApplicationEventPage) {
   if (!caseId) { caseId = await I.submitNewCaseWithData(mandatoryWithMultipleRespondents); }
   if (!solicitor1.details) {
     solicitor1.details = await apiHelper.getUser(solicitor1);
     solicitor1.details.organisation = 'Private solicitors';
   }
 
-  //Submit case
-  await I.navigateToCaseDetailsAs(config.swanseaLocalAuthorityUserOne, caseId);
-  await caseViewPage.goToNewActions(config.applicationActions.submitCase);
-  await submitApplicationEventPage.giveConsent();
-  await I.completeEvent('Submit', null, true);
+  // //Submit case
+  // await I.navigateToCaseDetailsAs(config.swanseaLocalAuthorityUserOne, caseId);
+  // await caseViewPage.goToNewActions(config.applicationActions.submitCase);
+  // await submitApplicationEventPage.giveConsent();
+  // await I.completeEvent('Submit', null, true);
 
-  //Solicitor completes Notice of Change (which gives the a case solicitor role)
+  // //Solicitor completes Notice of Change (which gives the a case solicitor role)
   await I.signIn(solicitor1);
-  await noticeOfChangePage.userCompletesNoC(caseId, 'Swansea City Council', 'Joe', 'Bloggs');
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
-  assertRepresentative(I, solicitor1.details, 'Private solicitors');
-  caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
-  assertChangeOfRepresentative(I, 1, 'Notice of change', 'Joe Bloggs', solicitor1.details.email, { addedUser: solicitor1.details });
+  // await noticeOfChangePage.userCompletesNoC(caseId, 'Swansea City Council', 'Joe', 'Bloggs');
+  // caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  // assertRepresentative(I, solicitor1.details, 'Private solicitors');
+  // caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
+  // assertChangeOfRepresentative(I, 1, 'Notice of change', 'Joe Bloggs', solicitor1.details.email, { addedUser: solicitor1.details });
+
+  await I.navigateToCaseDetailsAs(solicitor1, caseId);//TODO - remove from final version - I don't think it will be needed?
 }
 
-Scenario('MyTest', async ({I, caseViewPage, noticeOfChangePage, submitApplicationEventPage}) => {//TODO - change title
+Scenario('MyTest', async ({ I, caseViewPage, noticeOfChangePage, submitApplicationEventPage }) => {//TODO - change title
   await setupScenario(I, caseViewPage, noticeOfChangePage, submitApplicationEventPage);
 
   await caseViewPage.goToNewActions(config.applicationActions.addOrRemoveLegalCounsel);
