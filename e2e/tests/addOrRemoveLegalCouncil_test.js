@@ -5,43 +5,34 @@ const mandatoryWithMultipleRespondents = require('../fixtures/caseData/mandatory
 
 const solicitor1 = config.privateSolicitorOne;
 
-let caseId = 1626274136392886;//TODO - undo
+let caseId;
 
 Feature('Representative Barristers');
 
-async function setupScenario(I) {
+async function setupScenario(I, caseViewPage, noticeOfChangePage, submitApplicationEventPage) {
   if (!caseId) { caseId = await I.submitNewCaseWithData(mandatoryWithMultipleRespondents); }
   if (!solicitor1.details) {
     solicitor1.details = await apiHelper.getUser(solicitor1);
     solicitor1.details.organisation = 'Private solicitors';
   }
-}
-
-Scenario('MyTest', async ({I, caseViewPage, noticeOfChangePage}) => {//TODO - change title
-  await setupScenario(I);
-  // await I.signIn(solicitor1);
-  // caseListPage.verifyCaseIsNotAccessible(caseId);
-
-  // await noticeOfChangePage.navigate();
-  // await noticeOfChangePage.enterCaseReference(caseId);
-  // I.click('Continue');
-  // I.see('Your notice of change request has not been submitted');
 
   //Submit case
-  // await I.navigateToCaseDetailsAs(config.swanseaLocalAuthorityUserOne, caseId);
-  // await caseViewPage.goToNewActions(config.applicationActions.submitCase);
-  // await submitApplicationEventPage.giveConsent();
-  // await I.completeEvent('Submit', null, true);
+  await I.navigateToCaseDetailsAs(config.swanseaLocalAuthorityUserOne, caseId);
+  await caseViewPage.goToNewActions(config.applicationActions.submitCase);
+  await submitApplicationEventPage.giveConsent();
+  await I.completeEvent('Submit', null, true);
 
-  console.log(solicitor1);
+  //Solicitor completes Notice of Change (which gives the a case solicitor role)
   await I.signIn(solicitor1);
-
   await noticeOfChangePage.userCompletesNoC(caseId, 'Swansea City Council', 'Joe', 'Bloggs');
   caseViewPage.selectTab(caseViewPage.tabs.casePeople);
   assertRepresentative(I, solicitor1.details, 'Private solicitors');
-
   caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
   assertChangeOfRepresentative(I, 1, 'Notice of change', 'Joe Bloggs', solicitor1.details.email, { addedUser: solicitor1.details });
+}
+
+Scenario('MyTest', async ({I, caseViewPage, noticeOfChangePage, submitApplicationEventPage}) => {//TODO - change title
+  await setupScenario(I, caseViewPage, noticeOfChangePage, submitApplicationEventPage);
 });
 
 const assertRepresentative = (I, user, organisation, index = 1) => {

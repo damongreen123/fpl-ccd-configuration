@@ -1,6 +1,11 @@
 require('./e2e/helpers/event_listener');
 const lodash = require('lodash');
 
+let chromeArgs = ['--disable-web-security'];
+if (process.env.PROXY_SERVER){
+  chromeArgs.push(`--proxy-server=${process.env.PROXY_SERVER}`);
+}
+
 exports.config = {
   output: './output',
   multiple: {
@@ -47,9 +52,7 @@ exports.config = {
       waitForTimeout: parseInt(process.env.WAIT_FOR_TIMEOUT || '20000'),
       chrome: {
         ignoreHTTPSErrors: true,
-        args: process.env.PROXY_SERVER ? [
-          `--proxy-server=${process.env.PROXY_SERVER}`,
-        ] : [],
+        args: chromeArgs,
         devtools: process.env.SHOW_BROWSER_WINDOW || false,
       },
       windowSize: '1280x960',
