@@ -11,9 +11,10 @@
   {
     "LiveFrom": "01/01/2017",
     "CaseTypeID": "CARE_SUPERVISION_EPO",
-    "ID": "addOrRemoveLegalCounselListOfCounsellors",
-    "Label": "Insert counsellors here",
-    "FieldType": "Label",
+    "ID": "listOfLegalCounsellors",
+    "Label": "Legal Counsellor",
+    "FieldType": "Collection",
+    "FieldTypeParameter": "LegalCounsellor",
     "SecurityClassification": "Public",
     "Searchable": "N"
   }
