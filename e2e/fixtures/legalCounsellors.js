@@ -4,7 +4,7 @@ module.exports = {
     firstName: 'Ted',
     lastName: 'Robinson',
     telephone: '02324000000',
-    organisation: 'Robinson Law LLC',
+    organisation: 'London Borough Hillingdon',
     email: config.hillingdonLocalAuthorityUserTwo.email,
   },
 };

@@ -11,43 +11,42 @@ let caseId = 1626430935807561;//TODO - undo
 Feature('Representative Barristers');
 
 async function setupScenario(I, caseViewPage, noticeOfChangePage, submitApplicationEventPage) {
-  if (!caseId) { caseId = await I.submitNewCaseWithData(mandatoryWithMultipleRespondents); }
   if (!solicitor1.details) {
     solicitor1.details = await apiHelper.getUser(solicitor1);
     solicitor1.details.organisation = 'Private solicitors';
   }
+  if (!caseId) {
+    caseId = await I.submitNewCaseWithData(mandatoryWithMultipleRespondents);
 
-  // //Submit case
-  // await I.navigateToCaseDetailsAs(config.swanseaLocalAuthorityUserOne, caseId);
-  // await caseViewPage.goToNewActions(config.applicationActions.submitCase);
-  // await submitApplicationEventPage.giveConsent();
-  // await I.completeEvent('Submit', null, true);
-
-  // //Solicitor completes Notice of Change (which gives the a case solicitor role)
-  // await I.signIn(solicitor1);
-  // await noticeOfChangePage.userCompletesNoC(caseId, 'Swansea City Council', 'Joe', 'Bloggs');
-  // caseViewPage.selectTab(caseViewPage.tabs.casePeople);
-  // assertRepresentative(I, solicitor1.details, 'Private solicitors');
-  // caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
-  // assertChangeOfRepresentative(I, 1, 'Notice of change', 'Joe Bloggs', solicitor1.details.email, { addedUser: solicitor1.details });
-
-  await I.navigateToCaseDetailsAs(solicitor1, caseId);//TODO - remove from final version - I don't think it will be needed?
+    //Submit case
+    await I.navigateToCaseDetailsAs(config.swanseaLocalAuthorityUserOne, caseId);
+    await caseViewPage.goToNewActions(config.applicationActions.submitCase);
+    await submitApplicationEventPage.giveConsent();
+    await I.completeEvent('Submit', null, true);
+  
+    //Solicitor completes Notice of Change (which gives the a case solicitor role)
+    await I.signIn(solicitor1);
+    await noticeOfChangePage.userCompletesNoC(caseId, 'Swansea City Council', 'Joe', 'Bloggs');
+    caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+    assertRepresentative(I, solicitor1.details, 'Private solicitors');
+    caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
+    assertChangeOfRepresentative(I, 1, 'Notice of change', 'Joe Bloggs', solicitor1.details.email, { addedUser: solicitor1.details });
+  } else {
+    await I.navigateToCaseDetailsAs(solicitor1, caseId);
+  }
 }
 
-Scenario('MyTest', async ({ I, caseViewPage, noticeOfChangePage, submitApplicationEventPage, manageLegalCounsellorsEventPage}) => {//TODO - change title
+Scenario('MyTest', async ({ I, caseViewPage, noticeOfChangePage, submitApplicationEventPage, manageLegalCounsellorsEventPage }) => {//TODO - change title
   await setupScenario(I, caseViewPage, noticeOfChangePage, submitApplicationEventPage);
 
   await caseViewPage.goToNewActions(config.applicationActions.addOrRemoveLegalCounsel);
   I.see('Add or remove legal counsel');
   I.see('Use this feature to add or remove a legal representative');
-  await I.goToNextPage();//TODO - we might not need await here
+  await I.goToNextPage();
   I.see('Add or remove legal counsel');
-  //TODO - add one, then add another
-  await I.click('Add new');
+  I.click('Add new');
   await manageLegalCounsellorsEventPage.addLegalCounsellor(legalCounsellors.legalCounsellor);
-  await I.wait(5);
   await I.completeEvent('Save and continue');
-  //TODO - CYA
 
   I.seeEventSubmissionConfirmation(config.applicationActions.addOrRemoveLegalCounsel);
 });

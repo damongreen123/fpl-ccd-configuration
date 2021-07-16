@@ -7,7 +7,7 @@ module.exports = {
       legalCounsellor: {
         firstName: `#listOfLegalCounsellors_${index}_firstName`,
         lastName: `#listOfLegalCounsellors_${index}_lastName`,
-        organisation: `#listOfLegalCounsellors_${index}_organisation`,
+        organisationGroup: `#listOfLegalCounsellors_${index}_${index}`,
         email: `#listOfLegalCounsellors_${index}_email`,
         telephone: `[id="listOfLegalCounsellors_${index}_telephoneNumber"]`,
       },
@@ -24,14 +24,17 @@ module.exports = {
     if(legalRepresentative.lastName) {
       I.fillField(this.fields(elementIndex).legalCounsellor.lastName, legalRepresentative.lastName);
     }
-    if(legalRepresentative.organisation) {
-      I.fillField(this.fields(elementIndex).legalCounsellor.organisation, legalRepresentative.organisation);
-    }
     if(legalRepresentative.email) {
       I.fillField(this.fields(elementIndex).legalCounsellor.email, legalRepresentative.email);
     }
     if(legalRepresentative.telephone) {
       I.fillField(this.fields(elementIndex).legalCounsellor.telephone, legalRepresentative.telephone);
+    }
+    if(legalRepresentative.organisation) {
+      await within(this.fields(elementIndex).legalCounsellor.organisationGroup, async () => {
+        I.fillField('#search-org-text', legalRepresentative.organisation);
+        I.click('Select');
+      });
     }
     await I.runAccessibilityTest();
   },

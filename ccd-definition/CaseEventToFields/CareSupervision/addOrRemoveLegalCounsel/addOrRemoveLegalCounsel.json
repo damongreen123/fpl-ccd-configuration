@@ -17,6 +17,7 @@
     "PageFieldDisplayOrder": 1,
     "DisplayContext": "MANDATORY",
     "PageID": "addOrRemoveLegalCounselDetails",
-    "PageDisplayOrder": 2
+    "PageDisplayOrder": 2,
+    "ShowSummaryChangeOption": "Y"
   }
 ]

@@ -35,7 +35,7 @@
     "LiveFrom": "01/01/2017",
     "ID": "LegalCounsellor",
     "ListElementCode": "organisation",
-    "FieldType": "Text",
+    "FieldType": "Organisation",
     "ElementLabel": "Organisation",
     "SecurityClassification": "Public"
   }
