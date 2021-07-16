@@ -779,7 +779,7 @@
     "Name": "Add or remove legal counsel",
     "Description": "Add or remove legal counsel",
     "DisplayOrder": 11,
-    "PreConditionState(s)": "*",
+    "PreConditionState(s)": "Submitted;Gatekeeping;PREPARE_FOR_HEARING;FINAL_HEARING",
     "PostConditionState": "*",
     "SecurityClassification": "Public",
     "EndButtonLabel": "Save and continue",
