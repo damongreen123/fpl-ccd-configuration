@@ -29,10 +29,6 @@ function organisationTabFieldSelector(pathToField) {
   return `${selector}//*[contains(@class,"complex-panel-compound-field") and ..//*[text()="${fieldName}:"]]`;
 }
 
-function getTabSelector(tab){
-  return `//*[@role="tab"]/div[text() = "${tab}"]`;
-}
-
 module.exports = {
   seeInTab: function (pathToField, fieldValue) {
     const fieldSelector = tabFieldSelector(pathToField);
@@ -124,25 +120,5 @@ module.exports = {
   expandDocument(documentSection, documentTitle) {
     this.click(locate('summary').withAttr({class: 'govuk-details__summary'}).withText(documentTitle)
       .inside(locate('details').withChild(locate('summary').withText(documentSection))));
-  },
-
-  async selectTab(tab){
-    const tabSelector = getTabSelector(tab);
-
-    const numberOfElements = await this.grabNumberOfVisibleElements('//*[@role="tab"]');
-
-    for(let i=0; i<numberOfElements; i++){
-      if((await this.canClick(tabSelector))){
-        break;
-      }
-      console.log(`Scrolling to tab '${tab}'`);
-      this.click('.mat-tab-header-pagination-after');
-    }
-
-    return this.click(tabSelector);
-  },
-
-  async dontSeeTab(tab){
-    this.dontSeeElement(getTabSelector(tab));
   },
 };

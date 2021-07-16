@@ -2,6 +2,8 @@ const { I } = inject();
 const assert = require('assert');
 const output = require('codeceptjs').output;
 
+const getTabSelector = tab => `//*[@role="tab"][child::div[text() = "${tab}"]]`;
+
 module.exports = {
 
   file: 'mockFile.txt',
@@ -134,16 +136,28 @@ module.exports = {
     await I.runAccessibilityTest();
   },
 
-  getTabSelector(tab){
-    return `//*[@role="tab"]/div[text() = "${tab}"]`;
-  },
-
   checkTabIsNotPresent(tab) {
-    I.dontSee(this.getTabSelector(tab));
+    I.dontSee(getTabSelector(tab));
   },
 
-  selectTab(tab) {
-    I.click(this.getTabSelector(tab));
+  async selectTab(tab){
+    const tabSelector = getTabSelector(tab);
+
+    const numberOfElements = await I.grabNumberOfVisibleElements('//*[@role="tab"]');
+
+    for(let i=0; i<numberOfElements; i++){
+      if((await I.canClick(tabSelector))){
+        break;
+      }
+      output.debug(`Scrolling to tab '${tab}'`);
+      I.click('.mat-tab-header-pagination-after');
+    }
+
+    I.click(tabSelector);
+
+    const id = await I.grabAttributeFrom(tabSelector, 'id');
+
+    return I.waitForVisible(`//mat-tab-body[contains(@class, "mat-tab-body-active")][@aria-labelledby="${id}"]//table`);
   },
 
   seeInCaseTitle(titleValue) {

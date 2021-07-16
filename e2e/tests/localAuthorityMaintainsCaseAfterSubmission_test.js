@@ -22,7 +22,7 @@ Scenario('local authority add an external barrister as a legal representative fo
 
   I.seeEventSubmissionConfirmation(config.applicationActions.manageLegalRepresentatives);
 
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  await caseViewPage.selectTab(caseViewPage.tabs.casePeople);
   I.seeInTab(['LA Legal representatives 1', 'Full name'], legalRepresentatives.barrister.fullName);
   I.seeInTab(['LA Legal representatives 1', 'Role'], legalRepresentatives.barrister.role);
   I.seeInTab(['LA Legal representatives 1', 'Organisation'], legalRepresentatives.barrister.organisation);
@@ -37,7 +37,7 @@ Scenario('local authority update solicitor', async ({I, caseViewPage, enterAppli
   await enterApplicantEventPage.enterSolicitorDetails({email: solicitorEmail});
   await I.seeCheckAnswersAndCompleteEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  await caseViewPage.selectTab(caseViewPage.tabs.casePeople);
   I.seeInTab(['Solicitor', 'Solicitor\'s email'], solicitorEmail);
 });
 
@@ -50,7 +50,7 @@ Scenario('local authority provides a statements of service', async ({I, caseView
   addStatementOfServiceEventPage.giveDeclaration();
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.addStatementOfService);
-  caseViewPage.selectTab(caseViewPage.tabs.legalBasis);
+  await caseViewPage.selectTab(caseViewPage.tabs.legalBasis);
   I.seeInTab(['Recipients 1', 'Name of recipient'], recipients[0].name);
   I.seeInTab(['Recipients 1', 'Do you have the recipient\'s address?'], recipients[0].addressCheck);
   I.seeInTab(['Recipient\'s address', 'Building and Street'], recipients[0].address.buildingAndStreet.lineOne);
@@ -97,7 +97,7 @@ Scenario('local authority upload placement application', async ({I, caseViewPage
   await placementEventPage.addConfidentialDocument(0, 'Other confidential documents', config.testFile);
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.placement);
+  await caseViewPage.selectTab(caseViewPage.tabs.placement);
 
   I.seeInTab(['Child 1', 'Name'], 'Timothy Jones');
   I.seeInTab(['Child 1', 'Application document'], 'mockFile.txt');

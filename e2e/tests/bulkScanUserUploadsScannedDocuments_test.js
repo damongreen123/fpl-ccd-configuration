@@ -21,7 +21,7 @@ Scenario('HMCTS admin uploads documents to be scanned', async ({I, caseViewPage,
 
 Scenario('HMCTS admin can see documents scanned in with Bulk Scan', async ({I, caseViewPage}) => {
   await setupScenario(I);
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
   I.expandDocumentSection('Any other documents', 'Example file name');
   I.seeInExpandedDocument('Example file name', null, '12:00pm, 1 January 2050');
 });

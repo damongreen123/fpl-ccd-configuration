@@ -50,7 +50,7 @@ Scenario('HMCTS Admin and LA upload confidential and non confidential further ev
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.manageDocumentsLA);
 
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
 
   I.dontSeeDocumentSection(otherReportsSection, supportingEvidenceDocuments[0].name);
   I.expandDocumentSection(otherReportsSection, supportingEvidenceDocuments[1].name);
@@ -64,7 +64,7 @@ Scenario('HMCTS Admin and LA upload confidential and non confidential further ev
   I.seeInExpandedConfidentialDocument(supportingEvidenceDocuments[2].name, config.swanseaLocalAuthorityUserOne.email, dateFormat(submittedAt, 'd mmm yyyy'));
 
   await I.navigateToCaseDetailsAs(config.hmctsAdminUser, caseId);
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
 
   I.expandDocumentSection(expertReportsSection, supportingEvidenceDocuments[0].name);
   I.seeInExpandedConfidentialDocument(supportingEvidenceDocuments[0].name, 'HMCTS', dateFormat(submittedAt, 'd mmm yyyy'));
@@ -109,7 +109,7 @@ Scenario('HMCTS Admin and LA upload confidential and non confidential respondent
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.manageDocumentsLA);
 
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
   I.expandDocumentSection(respondent1StatementsSection, supportingEvidenceDocuments[2].name);
   I.seeInExpandedConfidentialDocument(supportingEvidenceDocuments[2].name, config.swanseaLocalAuthorityUserOne.email, dateFormat(submittedAt, 'd mmm yyyy'));
 
@@ -124,7 +124,7 @@ Scenario('HMCTS Admin and LA upload confidential and non confidential respondent
   I.dontSeeDocumentSection(respondent1StatementsSection, supportingEvidenceDocuments[0].name);
 
   await I.navigateToCaseDetailsAs(config.hmctsAdminUser, caseId);
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
   I.expandDocumentSection(respondent1StatementsSection, supportingEvidenceDocuments[2].name);
   I.seeInExpandedConfidentialDocument(supportingEvidenceDocuments[2].name, config.swanseaLocalAuthorityUserOne.email, dateFormat(submittedAt, 'd mmm yyyy'));
 
@@ -140,7 +140,7 @@ Scenario('HMCTS Admin and LA upload confidential and non confidential respondent
   I.dontSeeConfidentialInExpandedDocument(respondent1StatementsSection, supportingEvidenceDocuments[1].name);
 
   await I.navigateToCaseDetailsAs(config.hillingdonLocalAuthorityUserOne, caseId);
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
 
   I.expandDocumentSection(respondent1StatementsSection, supportingEvidenceDocuments[3].name);
   I.seeInExpandedDocument(supportingEvidenceDocuments[3].name, config.swanseaLocalAuthorityUserOne.email, dateFormat(submittedAt, 'd mmm yyyy'));
@@ -176,7 +176,7 @@ Scenario('HMCTS Admin and LA upload confidential and non confidential correspond
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.manageDocumentsLA);
 
-  caseViewPage.selectTab(caseViewPage.tabs.correspondence);
+  await caseViewPage.selectTab(caseViewPage.tabs.correspondence);
 
   I.dontSeeInTab(['Email to say evidence will be late']);
   assertCorrespondence(I, 'HMCTS', 1, 'Email with evidence attached', 'Case evidence included');
@@ -185,7 +185,7 @@ Scenario('HMCTS Admin and LA upload confidential and non confidential correspond
   assertConfidentialCorrespondence(I, 'local authority',2, 'Correspondence document', 'Test notes');
 
   await I.navigateToCaseDetailsAs(config.hmctsAdminUser, caseId);
-  caseViewPage.selectTab(caseViewPage.tabs.correspondence);
+  await caseViewPage.selectTab(caseViewPage.tabs.correspondence);
 
   assertCorrespondence(I, 'HMCTS', 1, 'Email with evidence attached', 'Case evidence included');
   assertConfidentialCorrespondence(I, 'HMCTS', 2, 'Email to say evidence will be late', 'Evidence will be late');
@@ -208,13 +208,13 @@ Scenario('HMCTS Admin and LA upload confidential C2 supporting documents', async
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.manageDocumentsLA);
 
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
 
   assertConfidentialC2SupportingDocuments(I, 'C2 application', 1, 'Email to say evidence will be late', 'Evidence will be late');
   assertC2SupportingDocuments(I, 'C2 application', 2, 'Email with evidence attached', 'Case evidence included');
 
   await I.navigateToCaseDetailsAs(config.swanseaLocalAuthorityUserOne, caseId);
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
 
   I.dontSeeInTab(['Email to say evidence will be late']);
   assertC2SupportingDocuments(I, 'C2 application', 1, 'Email with evidence attached', 'Case evidence included');
@@ -230,14 +230,14 @@ Scenario('HMCTS Admin and LA upload confidential C2 supporting documents', async
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.manageDocumentsLA);
 
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
 
   assertC2SupportingDocuments(I, 'C2 application', 1, 'Email with evidence attached', 'Case evidence included');
   assertConfidentialC2SupportingDocuments(I, 'C2 application', 2, 'Correspondence document', 'Test notes');
   assertC2SupportingDocuments(I, 'C2 application', 3, 'C2 supporting document', 'Supports the C2 application');
 
   await I.navigateToCaseDetailsAs(config.hmctsAdminUser, caseId);
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
 
   assertConfidentialC2SupportingDocuments(I, 'C2 application', 1, 'Email to say evidence will be late', 'Evidence will be late');
   assertC2SupportingDocuments(I, 'C2 application', 2, 'Email with evidence attached', 'Case evidence included');
@@ -259,13 +259,13 @@ Scenario('HMCTS Admin and LA upload confidential Other applications supporting d
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.manageDocumentsLA);
 
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
 
   assertConfidentialC2SupportingDocuments(I, 'Other applications', 1, 'Email to say evidence will be late', 'Evidence will be late');
   assertC2SupportingDocuments(I, 'Other applications', 2, 'Email with evidence attached', 'Case evidence included');
 
   await I.navigateToCaseDetailsAs(config.swanseaLocalAuthorityUserOne, caseId);
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
 
   I.dontSeeInTab(['Email to say evidence will be late']);
   assertC2SupportingDocuments(I, 'Other applications', 1, 'Email with evidence attached', 'Case evidence included');
@@ -281,14 +281,14 @@ Scenario('HMCTS Admin and LA upload confidential Other applications supporting d
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.manageDocumentsLA);
 
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
 
   assertC2SupportingDocuments(I, 'Other applications', 1, 'Email with evidence attached', 'Case evidence included');
   assertConfidentialC2SupportingDocuments(I, 'Other applications', 2, 'Correspondence document', 'Test notes');
   assertC2SupportingDocuments(I, 'Other applications', 3, 'C2 supporting document', 'Supports the C2 application');
 
   await I.navigateToCaseDetailsAs(config.hmctsAdminUser, caseId);
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
 
   assertConfidentialC2SupportingDocuments(I, 'Other applications', 1, 'Email to say evidence will be late', 'Evidence will be late');
   assertC2SupportingDocuments(I, 'Other applications', 2, 'Email with evidence attached', 'Case evidence included');

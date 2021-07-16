@@ -486,12 +486,12 @@ Scenario('Create (C26) Secure accommodation order (deprivation of liberty)', asy
   });
 });
 
-function assertOrder(I, caseViewPage, order) {
+async function assertOrder(I, caseViewPage, order) {
   const orderElement = `Order ${order.orderIndex}`;
   const dateOfApproval = order.approvalDate !== undefined ? order.approvalDate : order.approvalDateTime;
   const mask = order.approvalDate !== undefined ? 'd mmm yyyy' : 'd mmm yyyy, h:MM:ss TT';
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   I.seeInTab([orderElement, 'Type of order'], order.orderType);
   I.seeInTab([orderElement, 'Approval date'], dateFormat(dateOfApproval, mask));
 

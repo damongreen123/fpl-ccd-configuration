@@ -24,7 +24,7 @@ Scenario('Gatekeeper adds allocated judge', async ({I, caseViewPage, allocatedJu
   await allocatedJudgeEventPage.enterAllocatedJudge('Moley', 'moley@example.com');
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.allocatedJudge);
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  await caseViewPage.selectTab(caseViewPage.tabs.casePeople);
   I.seeInTab(['Allocated Judge', 'Judge or magistrate\'s title'], 'Her Honour Judge');
   I.seeInTab(['Allocated Judge', 'Last name'], 'Moley');
   I.seeInTab(['Allocated Judge', 'Email Address'], 'moley@example.com');
@@ -37,7 +37,7 @@ Scenario('Gatekeeper make allocation decision based on proposal', async ({I, cas
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.enterAllocationDecision);
 
-  caseViewPage.selectTab(caseViewPage.tabs.legalBasis);
+  await caseViewPage.selectTab(caseViewPage.tabs.legalBasis);
   I.seeInTab(['Allocation decision', 'Which level of judge is needed for this case?'], 'District Judge');
 });
 
@@ -50,7 +50,7 @@ Scenario('Gatekeeper enters allocation decision', async ({I, caseViewPage, enter
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.enterAllocationDecision);
 
-  caseViewPage.selectTab(caseViewPage.tabs.legalBasis);
+  await caseViewPage.selectTab(caseViewPage.tabs.legalBasis);
   I.seeInTab(['Allocation decision', 'Which level of judge is needed for this case?'], 'Magistrate');
   I.seeInTab(['Allocation decision', 'Give reason'], 'new information was acquired');
 });

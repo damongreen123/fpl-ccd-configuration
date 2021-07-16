@@ -20,7 +20,7 @@ Scenario('HMCTS super user removes a generated order through \'Create or upload 
 
   await removeOrder(I, caseViewPage, removalToolEventPage, labelToSelect, true);
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   const generatedOrders = 'Other removed orders 1';
   I.seeInTab([generatedOrders, 'Order title'], 'Example Order Title');
   I.seeInTab([generatedOrders, 'Order document'], 'Blank order (C21).pdf');
@@ -36,7 +36,7 @@ Scenario('HMCTS super user removes a generated order through \'Manage orders\' f
 
   await removeOrder(I, caseViewPage, removalToolEventPage, labelToSelect, true);
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   const generatedOrders = 'Other removed orders 2';
   I.seeInTab([generatedOrders, 'Type of order'], 'Discharge of parental responsibility (C45B)');
   I.seeInTab([generatedOrders, 'Order document'], 'Discharge of parental responsibility (C45B).pdf');
@@ -53,7 +53,7 @@ Scenario('HMCTS super user removes a sealed cmo from a case', async ({I, caseVie
 
   await removeOrder(I, caseViewPage, removalToolEventPage, labelToSelect, true);
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   const sealedCMO = 'Removed case management orders 1';
   I.seeInTab([sealedCMO, 'Order'], 'mockFile.pdf');
   I.seeInTab([sealedCMO, 'Hearing'], 'Case management hearing, 1 January 2020');
@@ -70,7 +70,7 @@ Scenario('HMCTS super user removes a sdo from a case', async ({I, caseViewPage, 
 
   await removeOrder(I, caseViewPage, removalToolEventPage, labelToSelect, true);
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   const removeSDO = 'Removed gatekeeping orders 1';
   I.seeInTab([removeSDO, 'File'], 'sdo.pdf');
   I.seeInTab([removeSDO, 'Date of issue'], '28 April 2020');
@@ -84,9 +84,9 @@ Scenario('HMCTS super user removes a draft cmo from a case', async ({I, caseView
 
   await removeOrder(I, caseViewPage, removalToolEventPage, labelToSelect, false);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   I.dontSeeInTab('Removed case management orders 2');
 });
 
@@ -97,9 +97,9 @@ Scenario('HMCTS super user removes an agreed cmo from a case', async ({I, caseVi
 
   await removeOrder(I, caseViewPage, removalToolEventPage, labelToSelect, false);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   I.dontSeeInTab('Removed case management orders 2');
 });
 
@@ -129,7 +129,7 @@ Scenario('HMCTS super user removes an application from the case', async ({I, cas
   await I.runAccessibilityTest();
   await I.completeEvent('Submit');
 
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
   const removedApplication = 'Removed applications 1';
   I.seeInTab([removedApplication, 'File'], 'mockFile.pdf');
   I.seeInTab([removedApplication, 'Date and time of upload'], '16 June 2021, 11:49am');

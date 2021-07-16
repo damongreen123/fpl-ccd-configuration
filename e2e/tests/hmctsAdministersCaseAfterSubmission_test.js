@@ -92,10 +92,10 @@ Scenario('HMCTS admin uploads additional applications to the case', async ({I, c
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.uploadAdditionalApplications);
 
-  caseViewPage.selectTab(caseViewPage.tabs.paymentHistory);
+  await caseViewPage.selectTab(caseViewPage.tabs.paymentHistory);
   await paymentHistoryPage.checkPayment(feeToPay, c2Payment.pbaNumber);
 
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
 
   I.seeInTab(['Additional applications 1', 'C2 application', 'File'], 'mockFile.pdf');
   I.seeInTab(['Additional applications 1', 'C2 application', 'Applicant'], 'Jonathon Walker');
@@ -149,7 +149,7 @@ Scenario('HMCTS admin edits supporting evidence document on C2 application', asy
   manageDocumentsEventPage.enterDocumentName('Updated document name');
   await I.completeEvent('Save and continue', {summary: 'Summary', description: 'Description'});
   I.seeEventSubmissionConfirmation(config.administrationActions.manageDocuments);
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
   I.seeInTab(['Additional applications 1', 'C2 application', 'Supporting documents 1', 'Document name'], 'Updated document name');
   I.seeInTab(['Additional applications 1', 'C2 application', 'Supporting documents 1', 'Notes'], 'This is a note about supporting doc');
   I.seeTextInTab(['Additional applications 1', 'C2 application', 'Supporting documents 1', 'Date and time uploaded']);
@@ -166,7 +166,7 @@ Scenario('HMCTS admin edits supporting evidence document on Other application', 
   manageDocumentsEventPage.enterDocumentName('Updated document name');
   await I.completeEvent('Save and continue', {summary: 'Summary', description: 'Description'});
   I.seeEventSubmissionConfirmation(config.administrationActions.manageDocuments);
-  caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
+  await caseViewPage.selectTab(caseViewPage.tabs.otherApplications);
   I.seeInTab(['Additional applications 1', 'Other applications', 'Supporting documents 1', 'Document name'], 'Updated document name');
   I.seeInTab(['Additional applications 1', 'Other applications', 'Supporting documents 1', 'Notes'], 'This is a note about supporting doc');
   I.seeTextInTab(['Additional applications 1', 'Other applications', 'Supporting documents 1', 'Date and time uploaded']);
@@ -188,7 +188,7 @@ Scenario('HMCTS admin share case with representatives', async ({I, caseViewPage,
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.amendRepresentatives);
 
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  await caseViewPage.selectTab(caseViewPage.tabs.casePeople);
   I.seeInTab(['Representatives 1', 'Full name'], representative1.fullName);
   I.seeInTab(['Representatives 1', 'Position in a case'], representative1.positionInACase);
   I.seeInTab(['Representatives 1', 'Email address'], representative1.email);
@@ -274,7 +274,7 @@ xScenario('HMCTS admin creates notice of proceedings documents', async (I, caseV
   createNoticeOfProceedingsEventPage.enterLegalAdvisorName('Ian Watson');
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.createNoticeOfProceedings);
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
   I.seeInTab(['Notice of proceedings 1', 'File name'], 'Notice_of_proceedings_c6.pdf');
   I.seeInTab(['Notice of proceedings 2', 'File name'], 'Notice_of_proceedings_c6a.pdf');
 });
@@ -296,7 +296,7 @@ xScenario('HMCTS admin creates notice of proceedings documents with allocated ju
   await createNoticeOfProceedingsEventPage.enterLegalAdvisorName('Ian Watson');
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.createNoticeOfProceedings);
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
   I.seeInTab(['Notice of proceedings 1', 'File name'], 'Notice_of_proceedings_c6a.pdf');
   I.seeInTab(['Notice of proceedings 2', 'File name'], 'Notice_of_proceedings_c6.pdf');
 });
@@ -335,7 +335,7 @@ Scenario('HMCTS admin adds a note to the case', async ({I, caseViewPage, addNote
   await addNoteEventPage.addNote(note);
   await I.completeEvent('Save and continue');
   await I.seeEventSubmissionConfirmation(config.administrationActions.addNote);
-  caseViewPage.selectTab(caseViewPage.tabs.notes);
+  await caseViewPage.selectTab(caseViewPage.tabs.notes);
   I.seeInTab(['Note 1', 'Note'], note);
 }).retry(1); // async processing in previous test
 
@@ -345,7 +345,7 @@ Scenario('HMCTS admin adds expert report log', async ({I, caseViewPage, addExper
   await addExpertReportEventPage.addExpertReportLog(expertReportLog[0]);
   await I.completeEvent('Save and continue');
   await I.seeEventSubmissionConfirmation(config.administrationActions.addExpertReportLog);
-  caseViewPage.selectTab(caseViewPage.tabs.expertReports);
+  await caseViewPage.selectTab(caseViewPage.tabs.expertReports);
   I.seeInTab(['Report 1', 'What type of report have you requested?'], 'Pediatric');
   I.seeInTab(['Report 1', 'Date requested'], '1 Mar 2020');
   I.seeInTab(['Report 1', 'Has it been approved?'], 'Yes');
@@ -363,7 +363,7 @@ Scenario('HMCTS admin makes 26-week case extension', async ({I, caseViewPage, ad
   await addExtend26WeekTimelineEventPage.addCaseExtensionDate();
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.extend26WeekTimeline);
-  caseViewPage.selectTab(caseViewPage.tabs.summary);
+  await caseViewPage.selectTab(caseViewPage.tabs.summary);
   I.seeInTab('Date of issue', dateFormat(Date.now(), 'd mmm yyyy'));
   I.seeInTab('26-week timeline date', dateFormat(new Date().setDate(new Date().getDate() + 26 * 7), 'd mmm yyyy'));
   I.seeInTab('Extended timeline date', '10 Oct 2030');
@@ -377,7 +377,7 @@ Scenario('HMCTS admin closes the case', async ({I, caseViewPage, closeTheCaseEve
   await closeTheCaseEventPage.closeCase({day: 12, month: 3, year: 2020}, closeTheCaseEventPage.fields.reasons.deprivation, undefined, false);
   await I.completeEvent('Submit');
   I.seeEventSubmissionConfirmation(config.administrationActions.closeTheCase);
-  caseViewPage.selectTab(caseViewPage.tabs.summary);
+  await caseViewPage.selectTab(caseViewPage.tabs.summary);
   I.seeInTab(['Close the case', 'Date'], '12 Mar 2020');
   I.seeInTab(['Close the case', 'Reason'], 'Deprivation of liberty');
 }).retry(1);

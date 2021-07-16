@@ -22,16 +22,16 @@ Scenario('Gatekeeping judge uploads urgent hearing order', async ({I, caseViewPa
   await draftStandardDirectionsEventPage.uploadUrgentHearingOrder(config.testWordFile);
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   I.seeInTab(['Gatekeeping order - urgent hearing order', 'Allocation decision'], 'Magistrate');
   I.seeInTab(['Gatekeeping order - urgent hearing order', 'Order'], 'mockFile.pdf');
   I.seeInTab(['Gatekeeping order - urgent hearing order', 'Date added'], dateFormat('d mmm yyyy'));
 
-  caseViewPage.selectTab(caseViewPage.tabs.legalBasis);
+  await caseViewPage.selectTab(caseViewPage.tabs.legalBasis);
   I.seeInTab(['Allocation decision', 'Which level of judge is needed for this case?'], 'Magistrate');
   I.seeInTab(['Allocation decision', 'Give reason'], 'some reason');
 
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
   I.seeInTab(['Notice of proceedings 1', 'File name'], 'Notice_of_proceedings_c6.pdf');
 });
 
@@ -49,7 +49,7 @@ Scenario('Gatekeeping judge uploads draft gatekeeping order', async ({I, caseVie
   await draftStandardDirectionsEventPage.markAsDraft();
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
   I.see('Draft gatekeeping order');
   I.seeInTab(['Gatekeeping order', 'File'], 'mockFile.docx');
   I.seeInTab(['Gatekeeping order', 'Date uploaded'], dateFormat('d mmm yyyy'));
@@ -66,10 +66,10 @@ Scenario('Gatekeeping judge uploads final standard directions', async ({I, caseV
   await draftStandardDirectionsEventPage.markAsFinal();
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   I.seeInTab(['Gatekeeping order', 'File'], 'mockFile.pdf');
   I.seeInTab(['Gatekeeping order', 'Date uploaded'], dateFormat('d mmm yyyy'));
   I.seeInTab(['Gatekeeping order', 'Uploaded by'], 'Uploaded by');
 
-  I.dontSeeTab(caseViewPage.tabs.draftOrders);
+  caseViewPage.checkTabIsNotPresent(caseViewPage.tabs.draftOrders);
 });

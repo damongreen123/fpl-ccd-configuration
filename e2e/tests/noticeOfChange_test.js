@@ -45,10 +45,10 @@ Scenario('Solicitor can request representation only after case submission', asyn
   await I.signIn(solicitor1);
 
   await noticeOfChangePage.userCompletesNoC(caseId, 'Swansea City Council', 'Joe', 'Bloggs');
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  await caseViewPage.selectTab(caseViewPage.tabs.casePeople);
   assertRepresentative(I, solicitor1.details, 'Private solicitors');
 
-  caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
+  await caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
   assertChangeOfRepresentative(I, 1, 'Notice of change', 'Joe Bloggs', solicitor1.details.email, { addedUser: solicitor1.details });
 });
 
@@ -58,10 +58,10 @@ Scenario('Solicitor request representation of second unrepresented respondent', 
   caseListPage.verifyCaseIsNotAccessible(caseId);
 
   await noticeOfChangePage.userCompletesNoC(caseId, 'Swansea City Council', 'Emma', 'White');
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  await caseViewPage.selectTab(caseViewPage.tabs.casePeople);
   assertRepresentative(I, solicitor2.details, 'London Borough Hillingdon', 2);
 
-  caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
+  await caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
   assertChangeOfRepresentative(I, 2, 'Notice of change', 'Emma White', solicitor2.details.email, { addedUser: solicitor2.details });
 });
 
@@ -71,10 +71,10 @@ Scenario('Solicitor request representation of represented respondent', async ({I
   caseListPage.verifyCaseIsNotAccessible(caseId);
 
   await noticeOfChangePage.userCompletesNoC(caseId, 'Swansea City Council', 'Joe', 'Bloggs');
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  await caseViewPage.selectTab(caseViewPage.tabs.casePeople);
   assertRepresentative(I, solicitor3.details, 'Wiltshire County Council');
 
-  caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
+  await caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
   assertChangeOfRepresentative(I, 3, 'Notice of change', 'Joe Bloggs', solicitor3.details.email, { addedUser: solicitor3.details, removedUser: solicitor1.details });
 
   await I.signIn(solicitor1);
@@ -90,7 +90,7 @@ Scenario('Hmcts admin replaces respondent solicitor', async ({I, caseListPage, c
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.amendRespondents);
 
-  caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
+  await caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
   assertChangeOfRepresentative(I, 4, 'FPL', 'Emma White', 'HMCTS', { addedUser: { ...solicitor2.details, organisation: 'Swansea City Council'}, removedUser: solicitor2.details });
 
   await I.signIn(solicitor2);
@@ -106,7 +106,7 @@ Scenario('Hmcts admin removes respondent solicitor', async ({I, caseListPage, ca
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.amendRespondents);
 
-  caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
+  await caseViewPage.selectTab(caseViewPage.tabs.changeOfRepresentatives);
   assertChangeOfRepresentative(I, 5, 'FPL', 'Joe Bloggs', 'HMCTS', {removedUser: solicitor3.details });
 
   await I.signIn(solicitor3);

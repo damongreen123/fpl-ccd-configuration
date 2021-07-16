@@ -30,9 +30,9 @@ Scenario('LA makes corrections to the application', async ({I, caseViewPage, ent
   await setupScenario(I);
   await I.navigateToCaseDetailsAs(config.swanseaLocalAuthorityUserOne, caseId);
 
-  caseViewPage.selectTab(caseViewPage.tabs.viewApplication);
+  await caseViewPage.selectTab(caseViewPage.tabs.viewApplication);
   I.dontSee('mockSubmittedForm.pdf');
-  caseViewPage.selectTab(caseViewPage.tabs.overview);
+  await caseViewPage.selectTab(caseViewPage.tabs.overview);
   I.seeInTab(['Return details', 'Date submitted'], formattedDate);
   I.seeInTab(['Return details', 'Date returned'], formattedDate);
   I.seeInTab(['Return details', 'Document'], 'mockSubmittedForm_returned.pdf');
@@ -44,7 +44,7 @@ Scenario('LA makes corrections to the application', async ({I, caseViewPage, ent
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.enterApplicant);
 
-  caseViewPage.selectTab(caseViewPage.tabs.viewApplication);
+  await caseViewPage.selectTab(caseViewPage.tabs.viewApplication);
   I.seeInTab(['Applicants 1', 'Party', 'Payment by account (PBA) number'], applicant.pbaNumber);
 
   await caseViewPage.goToNewActions(config.applicationActions.submitCase);
@@ -53,6 +53,6 @@ Scenario('LA makes corrections to the application', async ({I, caseViewPage, ent
   await I.completeEvent('Submit', null, true);
   I.seeEventSubmissionConfirmation(config.applicationActions.submitCase);
 
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
   I.see('e2e_test_case.pdf');
 });

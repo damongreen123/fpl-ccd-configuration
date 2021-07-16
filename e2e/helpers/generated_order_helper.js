@@ -196,7 +196,7 @@ module.exports = {
   },
 
   async assertOrder(I, caseViewPage, order, defaultIssuedDate, isOrderRemoved = false) {
-    caseViewPage.selectTab(caseViewPage.tabs.orders);
+    await caseViewPage.selectTab(caseViewPage.tabs.orders);
     const numberOfOrders = await I.grabNumberOfVisibleElements('//*[text() = \'Type of order\']');
     const orderHeading = isOrderRemoved ? `Other removed orders ${numberOfOrders}` : `Order ${numberOfOrders}`;
 
@@ -223,7 +223,7 @@ module.exports = {
   },
 
   async assertOrderSentToParty(I, caseViewPage, partyName, order, index = 1) {
-    caseViewPage.selectTab(caseViewPage.tabs.documentsSentToParties);
+    await caseViewPage.selectTab(caseViewPage.tabs.documentsSentToParties);
     const numberOfDocuments = await I.grabNumberOfVisibleElements(`//*[text() = '${partyName}']/ancestor::ccd-read-complex-field-table//ccd-read-complex-field-table`);
     I.seeInTab([`Party ${index}`, 'Recipient'], partyName);
     I.seeInTab([`Party ${index}`, `Document ${numberOfDocuments}`, 'File'], order.document);

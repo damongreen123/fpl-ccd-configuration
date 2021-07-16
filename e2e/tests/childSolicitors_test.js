@@ -61,7 +61,7 @@ Scenario('HMCTS assign a main solicitor for all the children', async ({I, caseVi
   enterChildrenEventPage.selectChildrenHaveSameRepresentation(enterChildrenEventPage.fields().mainSolicitor.childrenHaveSameRepresentation.options.yes);
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.amendChildren);
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  await caseViewPage.selectTab(caseViewPage.tabs.casePeople);
   mandatoryWithMaxChildren.caseData.children1.forEach((element, index) => assertChild(I, index + 1, element.value, mainSolicitor));
 });
 
@@ -89,7 +89,7 @@ Scenario('HMCTS assign a different solicitor for some of the children', async ({
   await I.completeEvent('Save and continue');
 
   I.seeEventSubmissionConfirmation(config.administrationActions.amendChildren);
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  await caseViewPage.selectTab(caseViewPage.tabs.casePeople);
 
   for (const [index, child] of children.entries()) {
     const solicitor = index === childWithDifferentRegisteredSolicitorIdx ? alternativeSolicitor : (index === childWithUnregisteredSolicitorIdx ? unregisteredSolicitor : mainSolicitor);

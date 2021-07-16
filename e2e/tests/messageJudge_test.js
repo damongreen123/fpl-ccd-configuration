@@ -24,7 +24,7 @@ Scenario('HMCTS admin messages the judge @cross-browser', async ({I, caseViewPag
   messageJudgeOrLegalAdviserEventPage.enterMessage(message);
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.messageJudge);
-  await I.selectTab(caseViewPage.tabs.judicialMessages);
+  await caseViewPage.selectTab(caseViewPage.tabs.judicialMessages);
 
   I.seeInTab(['Message 1', 'From'], config.ctscEmail);
   I.seeInTab(['Message 1', 'Sent to'], 'recipient@fpla.com');
@@ -46,7 +46,7 @@ Scenario('Judge replies to HMCTS admin', async ({I, caseViewPage, messageJudgeOr
   messageJudgeOrLegalAdviserEventPage.enterMessageReply(reply);
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.messageJudge);
-  caseViewPage.selectTab(caseViewPage.tabs.judicialMessages);
+  await caseViewPage.selectTab(caseViewPage.tabs.judicialMessages);
 
   I.seeInTab(['Message 1', 'From'], config.judicaryUser.email);
   I.seeInTab(['Message 1', 'Sent to'], config.ctscEmail);
@@ -68,7 +68,7 @@ Scenario('HMCTS admin closes the message', async ({I, caseViewPage, messageJudge
   I.see('This message will now be marked as closed');
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.messageJudge);
-  caseViewPage.selectTab(caseViewPage.tabs.judicialMessages);
+  await caseViewPage.selectTab(caseViewPage.tabs.judicialMessages);
   const history = config.ctscEmail + ' - ' +  message + '\n \n' + config.judicaryUser.email + ' - ' + reply;
   I.see('Closed messages');
   I.seeInTab(['Message 1', 'From'], config.judicaryUser.email);
@@ -92,7 +92,7 @@ Scenario('Judge messages court admin', async ({I, caseViewPage, messageJudgeOrLe
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.messageJudge);
 
-  caseViewPage.selectTab(caseViewPage.tabs.judicialMessages);
+  await caseViewPage.selectTab(caseViewPage.tabs.judicialMessages);
   I.seeInTab(['Message 1', 'From'], config.judicaryUser.email);
   I.seeInTab(['Message 1', 'Sent to'], config.ctscEmail);
   I.seeInTab(['Message 1', 'Message subject'], 'Judge subject');

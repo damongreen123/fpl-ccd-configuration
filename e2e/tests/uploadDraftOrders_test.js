@@ -61,7 +61,7 @@ Scenario('Local authority uploads draft orders', async ({I, caseViewPage, upload
   await draftOrdersHelper.localAuthorityUploadsDraftCmo(I, caseViewPage, uploadCaseManagementOrderEventPage, hearing3, supportingDoc);
   await draftOrdersHelper.localAuthorityUploadsC21(I, caseViewPage, uploadCaseManagementOrderEventPage, draftOrder2, hearing1);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
 
   assertDraftOrders(I, 1, hearing1, [
     {title: agreedCMO, status: withJudgeStatus},
@@ -75,7 +75,7 @@ Scenario('Local authority uploads draft orders', async ({I, caseViewPage, upload
     {title: draftCMO, status: draftStatus, supportingDocs: supportingDoc},
   ]);
 
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
   I.expandDocumentSection('Any other documents', supportingDoc.name);
   I.seeInExpandedDocument(supportingDoc.name, config.swanseaLocalAuthorityUserOne.email, dateFormat(date, 'd mmm yyyy'));
 });
@@ -96,7 +96,7 @@ Scenario('Respondent solicitor uploads draft orders', async ({I, caseViewPage, e
   await I.navigateToCaseDetailsAs(config.privateSolicitorOne, caseId);
   await draftOrdersHelper.localAuthorityUploadsC21(I, caseViewPage, uploadCaseManagementOrderEventPage, draftOrder3);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
   assertDraftOrders(I, 4, hearing4, [
     {title: draftOrder3.title, status: withJudgeStatus},
   ]);
@@ -115,10 +115,10 @@ Scenario('Judge makes changes to agreed CMO and seals', async ({I, caseViewPage,
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.approveOrders);
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   assertSealedCMO(I, 1, hearing2);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
   I.dontSeeInTab(hearing2);
 });
 
@@ -126,7 +126,7 @@ Scenario('Judge sends draft orders to the local authority', async ({I, caseViewP
   await setupScenario(I);
   await I.navigateToCaseDetailsAs(config.judicaryUser, caseId);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
   await I.startEventViaHyperlink(linkLabel);
   await reviewAgreedCaseManagementOrderEventPage.selectCMOToReview(hearing1);
   await I.goToNextPage();
@@ -139,7 +139,7 @@ Scenario('Judge sends draft orders to the local authority', async ({I, caseViewP
 
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
 
   assertDraftOrders(I, 1, hearing1, [
     {title: draftOrder2.title, status: withJudgeStatus},
@@ -150,14 +150,14 @@ Scenario('Local authority makes changes requested by the judge', async ({I, case
   await setupScenario(I);
   await I.navigateToCaseDetailsAs(config.swanseaLocalAuthorityUserOne, caseId);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
   assertDraftOrders(I, 1, hearing1, [
     {title: draftOrder2.title, status: withJudgeStatus},
   ]);
 
   await draftOrdersHelper.localAuthoritySendsAgreedCmo(I, caseViewPage, uploadCaseManagementOrderEventPage, hearing1,null, draftOrder1Updated);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
 
   assertDraftOrders(I, 1, hearing1, [
     {title: agreedCMO, status: withJudgeStatus},
@@ -180,13 +180,13 @@ Scenario('Judge seals and sends draft orders for no hearing to parties', async (
 
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   assertSealedC21(I, 1, draftOrder3);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
   I.dontSee(noHearing);
 
-  caseViewPage.selectTab(caseViewPage.tabs.documentsSentToParties);
+  await caseViewPage.selectTab(caseViewPage.tabs.documentsSentToParties);
   assertDocumentSentToParties(I);
 });
 
@@ -202,20 +202,20 @@ Scenario('Judge seals and sends draft orders for hearing to parties', async ({I,
 
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
 
   assertSealedCMO(I, 1, hearing2);
   assertSealedCMO(I, 2, hearing1);
   assertSealedC21(I, 2, draftOrder2);
   assertSealedC21(I, 3, draftOrder1Updated);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
 
   I.dontSee(hearing1);
   I.dontSee(hearing2);
   I.see(hearing3);
 
-  caseViewPage.selectTab(caseViewPage.tabs.documentsSentToParties);
+  await caseViewPage.selectTab(caseViewPage.tabs.documentsSentToParties);
   assertDocumentSentToParties(I);
 }).retry(1); // Async case update in prev test
 

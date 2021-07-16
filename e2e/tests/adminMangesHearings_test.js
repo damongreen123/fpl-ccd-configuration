@@ -43,7 +43,7 @@ Scenario('HMCTS admin creates first hearings', async ({I, caseViewPage, manageHe
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.manageHearings);
 
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
 
   I.seeInTab(['Hearing 1', 'Type of hearing'], hearingDetails[0].caseManagement);
   I.seeInTab(['Hearing 1', 'Court'], hearingDetails[0].venue);
@@ -75,7 +75,7 @@ Scenario('HMCTS admin creates subsequent hearings', async ({I, caseViewPage, man
   manageHearingsEventPage.dontSendNoticeOfHearing();
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
 
   I.seeInTab(['Hearing 2', 'Type of hearing'], hearingDetails[1].caseManagement);
   I.seeInTab(['Hearing 2', 'Court'], hearingDetails[0].venue);
@@ -100,7 +100,7 @@ Scenario('HMCTS admin edit hearings', async ({I, caseViewPage, manageHearingsEve
   manageHearingsEventPage.sendNoticeOfHearingWithNotes('The venue has changed');
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
 
   I.seeInTab(['Hearing 2', 'Type of hearing'], hearingDetails[1].caseManagement);
   I.seeInTab(['Hearing 2', 'Court'], hearingDetails[1].venue);
@@ -147,7 +147,7 @@ Scenario('HMCTS admin uploads further hearing evidence documents', async ({I, ca
   await I.completeEvent('Save and continue', {summary: 'Summary', description: 'Description'});
   I.seeEventSubmissionConfirmation(config.administrationActions.manageDocuments);
 
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
 
   I.expandDocumentSection('Expert reports', 'Document 1');
   I.seeInExpandedDocument('Document 1', 'HMCTS', dateFormat(submittedAt, 'd mmm yyyy'));
@@ -178,7 +178,7 @@ Scenario('HMCTS admin adjourns and re-lists a hearing', async ({I, caseViewPage,
   manageHearingsEventPage.dontSendNoticeOfHearing();
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
 
   I.seeInTab(['Hearing 2', 'Type of hearing'], hearingDetails[0].caseManagement);
   I.seeInTab(['Hearing 2', 'Court'], hearingDetails[0].venue);
@@ -192,7 +192,7 @@ Scenario('HMCTS admin adjourns and re-lists a hearing', async ({I, caseViewPage,
   I.seeInTab(['Adjourned or vacated hearing 1', 'Start date and time'], formatHearingTime(hearingStartDate));
   I.seeInTab(['Adjourned or vacated hearing 1', 'Status'], 'Adjourned');
 
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
   I.expandDocumentSection('Expert reports', 'Document 1');
   I.seeInExpandedDocument('Document 1', 'HMCTS', dateFormat(submittedAt, 'd mmm yyyy'));
 
@@ -218,7 +218,7 @@ Scenario('HMCTS admin vacates and re-lists a hearing', async ({I, caseViewPage, 
   manageHearingsEventPage.dontSendNoticeOfHearing();
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
 
   I.seeInTab(['Hearing 2', 'Type of hearing'], hearingDetails[1].caseManagement);
   I.seeInTab(['Hearing 2', 'Court'], hearingDetails[1].venue);
@@ -231,7 +231,7 @@ Scenario('HMCTS admin vacates and re-lists a hearing', async ({I, caseViewPage, 
   I.seeInTab(['Adjourned or vacated hearing 2', 'Start date and time'], '1 Jan 2060, 11:00:00 AM');
   I.seeInTab(['Adjourned or vacated hearing 2', 'Status'], 'Vacated');
 
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
   I.expandDocumentSection('Expert reports', 'Document 3');
   I.seeInExpandedDocument('Document 3', 'HMCTS', dateFormat(submittedAt, 'd mmm yyyy'));
 });
@@ -247,7 +247,7 @@ Scenario('HMCTS admin cancels and re-lists hearing', async ({I, caseViewPage, ma
   manageHearingsEventPage.selectCancellationReason('No key issue analysis');
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
   I.seeInTab(['Adjourned or vacated hearing 3', 'Status'], 'Vacated - to be re-listed');
 
   await caseViewPage.goToNewActions(config.administrationActions.manageHearings);
@@ -259,7 +259,7 @@ Scenario('HMCTS admin cancels and re-lists hearing', async ({I, caseViewPage, ma
   manageHearingsEventPage.dontSendNoticeOfHearing();
   await I.completeEvent('Save and continue');
 
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
   I.seeInTab(['Hearing 2', 'Type of hearing'], hearingDetails[1].caseManagement);
   I.seeInTab(['Hearing 2', 'Court'], hearingDetails[1].venue);
   I.seeInTab(['Hearing 2', 'Court address', 'Building and Street'], hearingDetails[1].venueCustomAddress.buildingAndStreet.lineOne);
@@ -275,7 +275,7 @@ Scenario('HMCTS admin cancels and re-lists hearing', async ({I, caseViewPage, ma
 
   I.seeInTab(['Adjourned or vacated hearing 2', 'Status'], 'Vacated');
 
-  caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
+  await caseViewPage.selectTab(caseViewPage.tabs.furtherEvidence);
   I.expandDocumentSection('Expert reports', 'Document 3');
   I.seeInExpandedDocument('Document 3', 'HMCTS', dateFormat(submittedAt, 'd mmm yyyy'));
 });
@@ -307,7 +307,7 @@ Scenario('HMCTS admin adds past hearing', async ({I, caseViewPage, manageHearing
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.manageHearings);
 
-  caseViewPage.selectTab(caseViewPage.tabs.hearings);
+  await caseViewPage.selectTab(caseViewPage.tabs.hearings);
 
   I.seeInTab(['Hearing 3', 'Type of hearing'], hearingDetails[0].caseManagement);
   I.seeInTab(['Hearing 3', 'Court'], hearingDetails[0].venue);

@@ -50,7 +50,7 @@ Scenario('HMCTS super user changes state from case management to final hearing',
   await I.completeEvent(changeCaseStateEventPage.fields.endButton, {summary: 'change state', description: 'change state to final hearing'});
   I.seeEventSubmissionConfirmation(config.superUserActions.changeCaseState);
 
-  caseViewPage.selectTab(caseViewPage.tabs.history);
+  await caseViewPage.selectTab(caseViewPage.tabs.history);
   I.seeEndStateForEvent(config.superUserActions.changeCaseState, 'Final hearing');
 });
 
@@ -64,6 +64,6 @@ Scenario('HMCTS super user changes state from closed to final hearing', async ({
   await I.completeEvent(changeCaseStateEventPage.fields.endButton, {summary: 'change state', description: 'change state to final hearing'});
   I.seeEventSubmissionConfirmation(config.superUserActions.changeCaseState);
 
-  caseViewPage.selectTab(caseViewPage.tabs.history);
+  await caseViewPage.selectTab(caseViewPage.tabs.history);
   I.seeEndStateForEvent(config.superUserActions.changeCaseState, 'Final hearing');
 });

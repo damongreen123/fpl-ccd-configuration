@@ -115,7 +115,7 @@ Scenario('Gatekeeping judge drafts gatekeeping order', async ({I, caseViewPage, 
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.addGatekeepingOrder);
 
-  caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
+  await caseViewPage.selectTab(caseViewPage.tabs.draftOrders);
   I.seeInTab(['Gatekeeping order', 'File'], 'draft-standard-directions-order.pdf');
 });
 
@@ -125,7 +125,7 @@ Scenario('Gatekeeping judge adds allocated judge', async ({I, caseViewPage, allo
   await allocatedJudgeEventPage.enterAllocatedJudge('Moley', 'moley@example.com');
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.applicationActions.allocatedJudge);
-  caseViewPage.selectTab(caseViewPage.tabs.casePeople);
+  await caseViewPage.selectTab(caseViewPage.tabs.casePeople);
   I.seeInTab(['Allocated Judge', 'Judge or magistrate\'s title'], 'Her Honour Judge');
   I.seeInTab(['Allocated Judge', 'Last name'], 'Moley');
   I.seeInTab(['Allocated Judge', 'Email Address'], 'moley@example.com');
@@ -187,11 +187,11 @@ Scenario('Gatekeeping judge seals gatekeeping order', async ({I, caseViewPage, a
   await I.completeEvent('Save and continue');
   I.seeEventSubmissionConfirmation(config.administrationActions.addGatekeepingOrder);
 
-  caseViewPage.selectTab(caseViewPage.tabs.orders);
+  await caseViewPage.selectTab(caseViewPage.tabs.orders);
   I.seeInTab(['Gatekeeping order', 'File'], 'standard-directions-order.pdf');
   I.seeInTab(['Gatekeeping order', 'Date of issue'], '11 January 2020');
 
-  caseViewPage.selectTab(caseViewPage.tabs.history);
+  await caseViewPage.selectTab(caseViewPage.tabs.history);
   I.seeEndStateForEvent(config.administrationActions.addGatekeepingOrder, 'Case management');
 
 });
