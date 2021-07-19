@@ -5,11 +5,11 @@ module.exports = {
 
     return {
       legalCounsellor: {
-        firstName: `#listOfLegalCounsellors_${index}_firstName`,
-        lastName: `#listOfLegalCounsellors_${index}_lastName`,
-        organisationGroup: `#listOfLegalCounsellors_${index}_${index}`,
-        email: `#listOfLegalCounsellors_${index}_email`,
-        telephone: `[id="listOfLegalCounsellors_${index}_telephoneNumber"]`,
+        firstName: `#legalCounsellors_${index}_firstName`,
+        lastName: `#legalCounsellors_${index}_lastName`,
+        organisationGroup: `#legalCounsellors_${index}_${index}`,
+        email: `#legalCounsellors_${index}_email`,
+        telephone: `[id="legalCounsellors_${index}_telephoneNumber"]`,
       },
     };
   },
