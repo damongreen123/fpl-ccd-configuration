@@ -84,4 +84,11 @@ public final class NotifyTemplates {
     public static final String NOTICE_OF_CHANGE_FORMER_REPRESENTATIVE = "0411d52e-69eb-440c-bb1f-3059ac6b9130";
     public static final String MANAGING_ORGANISATION_REMOVED_TEMPLATE = "e3fb2174-128a-41a4-acbb-ea3ffe758689";
     public static final String ORDER_AMENDED_NOTIFICATION_TEMPLATE = "fc3db3ca-b62c-4a29-ad9a-864d2fe10b72";
+
+    public static final String LOCAL_AUTHORITY_ADDED_DESIGNATED_LA_TEMPLATE = "0ee6157a-a11a-4a0c-be75-508d66857d67";
+    public static final String LOCAL_AUTHORITY_ADDED_SHARED_LA_TEMPLATE = "db77b13c-3f17-48ee-a7c0-90ba5adf73b6";
+
+    public static final String LOCAL_AUTHORITY_REMOVED_DESIGNATED_LA_TEMPLATE = "x";
+    public static final String LOCAL_AUTHORITY_REMOVED_SHARED_LA_TEMPLATE = "c02ac29c-2d84-4d1a-80f6-888b3fc31e19";
+
 }

@@ -101,6 +101,7 @@ class RespondentRepresentationServiceTest {
                 element(respondentOne),
                 element(respondentTwo)))
             .localAuthorities(wrapElements(LocalAuthority.builder()
+                .designated("Yes")
                 .name(LA_NAME)
                 .build()))
             .applicants(List.of(element(Applicant.builder()
@@ -109,7 +110,6 @@ class RespondentRepresentationServiceTest {
                     .build())
                 .build())))
             .build();
-
 
         final Map<String, Object> data = underTest.generate(caseData);
 

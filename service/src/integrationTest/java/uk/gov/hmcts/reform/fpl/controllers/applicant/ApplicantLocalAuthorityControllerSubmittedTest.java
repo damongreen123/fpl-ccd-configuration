@@ -72,6 +72,7 @@ class ApplicantLocalAuthorityControllerSubmittedTest extends AbstractCallbackTes
 
         final CaseData caseData = caseDataBefore.toBuilder()
             .localAuthorities(wrapElements(LocalAuthority.builder()
+                .designated("Yes")
                 .colleagues(wrapElements(solicitor()))
                 .build()))
             .build();

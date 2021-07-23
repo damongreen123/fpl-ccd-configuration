@@ -28,6 +28,7 @@ public class LocalAuthority {
     private String clientCode;
     private String customerReference;
     private List<Element<Colleague>> colleagues;
+    private String designated;
 
     @JsonIgnore
     public Optional<Colleague> getFirstSolicitor() {
@@ -42,4 +43,5 @@ public class LocalAuthority {
             .filter(colleague -> YesNo.YES.getValue().equals(colleague.getMainContact()))
             .findFirst();
     }
+
 }

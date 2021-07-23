@@ -143,6 +143,7 @@ const setupConfig = {
     addApplicationDocumentsEventPage: './e2e/pages/events/addApplicationDocumentsEvent.page.js',
     messageJudgeOrLegalAdviserEventPage: './e2e/pages/events/messageJudgeOrLegalAdviserEvent.page.js',
     manageOrdersEventPage: './e2e/pages/events/manageOrders.page.js',
+    manageLocalAuthoritiesEventPage: './e2e/pages/events/manageLocalAuthorities.page.js',
   },
   mocha: {
     reporterOptions: {

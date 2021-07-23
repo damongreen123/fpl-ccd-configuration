@@ -259,6 +259,7 @@ class RespondentControllerTest extends AbstractCallbackTest {
 
         final LocalAuthority localAuthority = LocalAuthority.builder()
             .name("Local authority name")
+            .designated("Yes")
             .build();
 
         final ApplicantParty legacyApplicant = ApplicantParty.builder()

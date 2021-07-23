@@ -15,6 +15,7 @@
           "[LABARRISTER]",
           "[LAMANAGING]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[SOLICITOR]",
           "[SOLICITORA]",
           "[SOLICITORB]",
@@ -56,6 +57,7 @@
           "[LABARRISTER]",
           "[LAMANAGING]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[SOLICITOR]",
           "[SOLICITORA]",
           "[SOLICITORB]",
@@ -97,6 +99,7 @@
           "[LABARRISTER]",
           "[LAMANAGING]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[SOLICITOR]",
           "[SOLICITORA]",
           "[SOLICITORB]",
@@ -143,6 +146,7 @@
           "[SOLICITORI]",
           "[SOLICITORJ]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -181,6 +185,7 @@
           "[SOLICITORI]",
           "[SOLICITORJ]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -219,6 +224,7 @@
           "[SOLICITORI]",
           "[SOLICITORJ]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -257,6 +263,7 @@
           "[SOLICITORI]",
           "[SOLICITORJ]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -295,6 +302,7 @@
           "[SOLICITORI]",
           "[SOLICITORJ]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -333,6 +341,7 @@
           "[SOLICITORI]",
           "[SOLICITORJ]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -371,6 +380,7 @@
           "[SOLICITORI]",
           "[SOLICITORJ]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -403,6 +413,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[LABARRISTER]",
           "[CAFCASSSOLICITOR]",
           "[SOLICITOR]"
@@ -443,6 +454,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[LABARRISTER]"
         ],
         "CRUD": "CRU"
@@ -474,6 +486,7 @@
         "UserRoles": [
           "caseworker-publiclaw-courtadmin",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[LABARRISTER]"
         ],
         "CRUD": "CU"
@@ -512,6 +525,7 @@
           "[LABARRISTER]",
           "[SOLICITOR]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -540,6 +554,7 @@
           "[LABARRISTER]",
           "[SOLICITOR]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -568,6 +583,7 @@
           "[LABARRISTER]",
           "[SOLICITOR]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -596,6 +612,7 @@
           "[LABARRISTER]",
           "[SOLICITOR]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -634,6 +651,7 @@
           "[SOLICITORI]",
           "[SOLICITORJ]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -662,6 +680,7 @@
           "[LABARRISTER]",
           "[SOLICITOR]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -690,6 +709,7 @@
           "[LABARRISTER]",
           "[SOLICITOR]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -718,6 +738,7 @@
           "[LABARRISTER]",
           "[SOLICITOR]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"
@@ -746,6 +767,7 @@
           "[LABARRISTER]",
           "[SOLICITOR]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[CAFCASSSOLICITOR]",
           "caseworker-publiclaw-courtadmin",
           "caseworker-publiclaw-cafcass"

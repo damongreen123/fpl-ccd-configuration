@@ -78,7 +78,7 @@ public class FeatureToggleService {
     }
 
     public boolean isApplicantAdditionalContactsEnabled() {
-        return ldClient.boolVariation("applicant-additional-contacts", createLDUser(), false);
+        return ldClient.boolVariation("applicant-additional-contacts", createLDUser(), true);
     }
 
     public boolean isLanguageRequirementsEnabled() {

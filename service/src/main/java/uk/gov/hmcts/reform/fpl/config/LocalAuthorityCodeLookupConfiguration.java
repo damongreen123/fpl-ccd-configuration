@@ -25,4 +25,11 @@ public class LocalAuthorityCodeLookupConfiguration {
         return Optional.ofNullable(mapping.getOrDefault(emailDomain, null));
     }
 
+    public Optional<String> getLocalAuthorityDomain(String code) {
+        return mapping.entrySet().stream()
+            .filter(x -> x.getValue().equals(code))
+            .findFirst()
+            .map(Map.Entry::getKey);
+    }
+
 }

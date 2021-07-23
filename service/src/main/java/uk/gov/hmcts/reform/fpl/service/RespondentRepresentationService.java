@@ -109,7 +109,7 @@ public class RespondentRepresentationService {
 
     private String getApplicantName(CaseData caseData) {
         if (isNotEmpty(caseData.getLocalAuthorities())) {
-            return caseData.getLocalAuthorities().get(0).getValue().getName();
+            return caseData.getDesignatedLocalAuthority().getName();
         }
 
         return caseData.getAllApplicants().get(0).getValue().getParty().getOrganisationName();

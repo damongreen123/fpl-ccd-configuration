@@ -50,6 +50,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -202,6 +203,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -223,6 +225,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -279,6 +282,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -307,6 +311,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -328,6 +333,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -349,6 +355,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -370,6 +377,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -391,6 +399,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -412,6 +421,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -433,6 +443,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -454,6 +465,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -540,6 +552,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -650,6 +663,7 @@
         "UserRoles": [
           "[LABARRISTER]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -696,6 +710,7 @@
     "CaseEventID": "manageLegalRepresentatives",
     "UserRoles": [
       "[LASOLICITOR]",
+      "[LASHARED]",
       "[EPSMANAGING]",
       "[LAMANAGING]"
     ],
@@ -782,6 +797,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -825,6 +841,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -846,6 +863,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -890,6 +908,7 @@
         "UserRoles": [
           "caseworker-publiclaw-courtadmin",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]",
           "caseworker-publiclaw-solicitor",
@@ -929,6 +948,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -955,6 +975,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[SOLICITOR]",
           "[SOLICITORA]",
           "[SOLICITORB]",
@@ -992,6 +1013,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]",
           "[LABARRISTER]"
@@ -1014,6 +1036,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -1046,6 +1069,7 @@
       {
         "UserRoles": [
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]",
           "caseworker-publiclaw-magistrate"
@@ -1074,6 +1098,7 @@
           "[SOLICITORI]",
           "[SOLICITORJ]",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]",
           "[CAFCASSSOLICITOR]",
@@ -1102,6 +1127,7 @@
         "UserRoles": [
           "caseworker-publiclaw-courtadmin",
           "[LASOLICITOR]",
+          "[LASHARED]",
           "[EPSMANAGING]",
           "[LAMANAGING]"
         ],
@@ -1192,6 +1218,28 @@
     "LiveFrom": "01/01/2017",
     "CaseTypeID": "CARE_SUPERVISION_EPO",
     "CaseEventID": "manageOrders",
+    "AccessControl": [
+      {
+        "UserRoles": [
+          "caseworker-publiclaw-courtadmin",
+          "caseworker-publiclaw-gatekeeper",
+          "caseworker-publiclaw-judiciary"
+        ],
+        "CRUD": "CR"
+      },
+      {
+        "UserRoles": [
+          "caseworker-publiclaw-magistrate",
+          "caseworker-publiclaw-solicitor"
+        ],
+        "CRUD": "R"
+      }
+    ]
+  },
+  {
+    "LiveFrom": "01/01/2017",
+    "CaseTypeID": "CARE_SUPERVISION_EPO",
+    "CaseEventID": "manageLocalAuthorities",
     "AccessControl": [
       {
         "UserRoles": [

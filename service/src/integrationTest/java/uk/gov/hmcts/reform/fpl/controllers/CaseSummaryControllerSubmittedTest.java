@@ -36,6 +36,7 @@ class CaseSummaryControllerSubmittedTest extends AbstractCallbackTest {
         final CaseData caseData = CaseData.builder()
             .id(CASE_ID)
             .localAuthorities(wrapElements(LocalAuthority.builder()
+                .designated("Yes")
                 .colleagues(wrapElements(Colleague.builder()
                     .role(ColleagueRole.SOLICITOR)
                     .fullName("John Smith")
