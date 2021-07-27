@@ -14,6 +14,16 @@
     "LiveFrom": "01/01/2017",
     "ID": "ManageDocuments",
     "CaseEventID": "manageDocuments",
+    "CaseFieldID": "languageRequirement",
+    "FieldDisplayOrder": 1,
+    "DisplayContext": "READONLY",
+    "FieldShowCondition": "manageDocument.type=\"DO NOT SHOW\"",
+    "Comment": "Hidden field, must be READONLY to workaround hidden fields deletion"
+  },
+  {
+    "LiveFrom": "01/01/2017",
+    "ID": "ManageDocuments",
+    "CaseEventID": "manageDocuments",
     "CaseFieldID": "manageDocument",
     "ListElementCode": "hasHearings",
     "EventElementLabel": "Has hearings",
@@ -134,5 +144,15 @@
     "FieldDisplayOrder": 10,
     "DisplayContext": "READONLY",
     "FieldShowCondition": "manageDocument.type=\"DO_NOT_SHOW\""
+  },
+  {
+    "LiveFrom": "01/01/2017",
+    "ID": "ManageDocuments",
+    "CaseEventID": "manageDocuments",
+    "CaseFieldID": "supportingEvidenceDocumentsTemp",
+    "ListElementCode": "translationType",
+    "FieldDisplayOrder": 11,
+    "DisplayContext": "MANDATORY",
+    "FieldShowCondition": "languageRequirement=\"Yes\""
   }
 ]

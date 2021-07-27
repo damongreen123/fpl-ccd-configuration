@@ -1,0 +1,23 @@
+[
+  {
+    "LiveFrom": "01/01/2017",
+    "ID": "FurtherEvidenceTranslationType",
+    "ListElementCode": "NOT_NEEDED",
+    "ListElement": "Applicant statement - for example witness, social work, initial or position statements, or police disclosure documents",
+    "DisplayOrder": 1
+  },
+  {
+    "LiveFrom": "01/01/2017",
+    "ID": "FurtherEvidenceTranslationType",
+    "ListElementCode": "ENGLISH_WELSH",
+    "ListElement": "English to Welsh",
+    "DisplayOrder": 2
+  },
+  {
+    "LiveFrom": "01/01/2017",
+    "ID": "FurtherEvidenceTranslationType",
+    "ListElementCode": "WELSH_ENGLISH",
+    "ListElement": "Welsh to English",
+    "DisplayOrder": 3
+  }
+]
