@@ -17,15 +17,11 @@ import uk.gov.hmcts.reform.fpl.controllers.CallbackController;
 import uk.gov.hmcts.reform.fpl.enums.ColleagueRole;
 import uk.gov.hmcts.reform.fpl.enums.State;
 import uk.gov.hmcts.reform.fpl.enums.YesNo;
-import uk.gov.hmcts.reform.fpl.model.Applicant;
-import uk.gov.hmcts.reform.fpl.model.ApplicantParty;
-import uk.gov.hmcts.reform.fpl.model.CaseData;
-import uk.gov.hmcts.reform.fpl.model.Colleague;
-import uk.gov.hmcts.reform.fpl.model.LocalAuthority;
-import uk.gov.hmcts.reform.fpl.model.Solicitor;
+import uk.gov.hmcts.reform.fpl.model.*;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
 import uk.gov.hmcts.reform.fpl.model.common.EmailAddress;
 import uk.gov.hmcts.reform.fpl.model.common.Telephone;
+import uk.gov.hmcts.reform.fpl.model.order.UrgentHearingOrder;
 import uk.gov.hmcts.reform.fpl.service.noc.NoticeOfChangeFieldPopulator;
 
 import java.util.ArrayList;
@@ -58,7 +54,8 @@ public class MigrateCaseController extends CallbackController {
     private final NoticeOfChangeFieldPopulator populator;
     private final Map<String, Consumer<CaseDetails>> migrations = Map.of(
         "FPLA-3132", this::run3132,
-        "FPLA-3238", this::run3238
+        "FPLA-3238", this::run3238,
+        "DFPL-197", this::run197
     );
 
     @PostMapping("/about-to-submit")
@@ -79,6 +76,40 @@ public class MigrateCaseController extends CallbackController {
 
         caseDetails.getData().remove(MIGRATION_ID_KEY);
         return respond(caseDetails);
+    }
+
+    private void run197(CaseDetails caseDetails) {
+        CaseData caseData = getCaseData(caseDetails);
+        long caseId = caseData.getId();
+
+        if (caseId != 1629206570549479L) {
+            throw new AssertionError(format(
+                "Migration {id = DFPL-197, case reference = %s}, expected case id 1629206570549479",
+                caseId
+            ));
+        }
+
+        UrgentHearingOrder uho = caseData.getUrgentHearingOrder();
+
+        if (uho == null) {
+            throw new AssertionError(format(
+                "Migration {id = DFPL-197, case reference = %s}, expected urgent hearing order to not be null",
+                caseId
+            ));
+        }
+        String uhoFilename = uho.getOrder().getFilename();
+        if (uhoFilename.equals("2355679 - SDO july 2020 final.pdf")) {
+            log.info("Migration {id = DFPL-197, case reference = {}} Urgent hearing document found",
+                caseId);
+
+            caseDetails.getData().put("urgentHearingOrder", null);
+
+        } else {
+            throw new AssertionError(format(
+                "Migration {id = DFPL-197, case reference = %s}, unexpected filename",
+                caseId
+            ));
+        }
     }
 
     private void run3132(CaseDetails caseDetails) {
