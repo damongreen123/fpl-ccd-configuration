@@ -139,5 +139,14 @@
     "FieldType": "YesOrNo",
     "SecurityClassification": "Public",
     "Searchable": "N"
+  },
+  {
+    "LiveFrom": "01/01/2017",
+    "ID": "childTimelineSelector",
+    "CaseTypeID": "CARE_SUPERVISION_EPO",
+    "Label": "Select whose timeline is being selected",
+    "FieldType": "ChildSelector",
+    "SecurityClassification": "PUBLIC",
+    "Searchable": "N"
   }
 ]

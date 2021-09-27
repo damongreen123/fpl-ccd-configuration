@@ -20,24 +20,19 @@ import java.time.LocalDate;
 import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.DATE;
 import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.formatLocalDateToString;
 
-
 @Api
 @RestController
 @RequestMapping("/callback/case-extension")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CaseExtensionController extends CallbackController {
+
     private final ValidateGroupService validateGroupService;
     private final CaseExtensionService caseExtensionService;
 
     @PostMapping("/about-to-start")
     public AboutToStartOrSubmitCallbackResponse handleAboutToStartEvent(@RequestBody CallbackRequest callbackRequest) {
         CaseDetails caseDetails = callbackRequest.getCaseDetails();
-        CaseData caseData = getCaseData(caseDetails);
-
-        LocalDate caseCompletionDate = caseExtensionService.getCaseShouldBeCompletedByDate(caseData);
-
-        caseDetails.getData().put("shouldBeCompletedByDate", formatLocalDateToString(caseCompletionDate, DATE));
-
+        caseDetails.getData().putAll(caseExtensionService.prePopulate(getCaseData(caseDetails)));
         return respond(caseDetails);
     }
 
