@@ -43,10 +43,10 @@ public class EmailNotificationHelper {
 
     public static String buildSubjectLine(final String familyManCaseNumber,
                                           final List<Element<Respondent>> respondents) {
-        final String respondentlastName = getFirstRespondentLastName(respondents);
+        final String respondentLastName = getFirstRespondentLastName(respondents);
         final String familyMan = defaultIfNull(familyManCaseNumber, "");
 
-        return Stream.of(respondentlastName, familyMan)
+        return Stream.of(respondentLastName, familyMan)
             .filter(StringUtils::isNotBlank)
             .collect(joining(", "));
     }
