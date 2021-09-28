@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.HearingBooking;
 import uk.gov.hmcts.reform.fpl.model.common.DocumentReference;
 import uk.gov.hmcts.reform.fpl.model.notify.OrderIssuedNotifyData;
+import uk.gov.hmcts.reform.fpl.model.notify.PlacementOrderIssuedNotifyData;
 import uk.gov.hmcts.reform.fpl.service.CourtService;
 import uk.gov.hmcts.reform.fpl.service.email.content.base.AbstractEmailContentProvider;
 import uk.gov.hmcts.reform.fpl.service.time.Time;
@@ -78,6 +79,10 @@ public class OrderIssuedEmailContentProvider extends AbstractEmailContentProvide
             .courtName(courtService.getCourtName(caseData))
             .callout(NOTICE_OF_PLACEMENT_ORDER != type ? buildCalloutWithNextHearing(caseData, time.now()) : "")
             .build();
+    }
+
+    public PlacementOrderIssuedNotifyData getNotifyDataForPlacementOrder(CaseData caseData, DocumentReference orderDocument) {
+        return null;//TODO
     }
 
 }

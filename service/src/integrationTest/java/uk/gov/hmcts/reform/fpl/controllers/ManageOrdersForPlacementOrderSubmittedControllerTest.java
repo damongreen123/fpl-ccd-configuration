@@ -27,6 +27,7 @@ import static uk.gov.hmcts.reform.fpl.Constants.LOCAL_AUTHORITY_1_INBOX;
 import static uk.gov.hmcts.reform.fpl.Constants.TEST_CASE_ID;
 import static uk.gov.hmcts.reform.fpl.Constants.TEST_FAMILY_MAN_NUMBER;
 import static uk.gov.hmcts.reform.fpl.NotifyTemplates.ORDER_GENERATED_NOTIFICATION_TEMPLATE_FOR_LA_AND_DIGITAL_REPRESENTATIVES;
+import static uk.gov.hmcts.reform.fpl.NotifyTemplates.PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE;
 import static uk.gov.hmcts.reform.fpl.model.order.Order.A70_PLACEMENT_ORDER;
 import static uk.gov.hmcts.reform.fpl.utils.AssertionHelper.checkUntil;
 import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.wrapElements;
@@ -81,13 +82,13 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
         postSubmittedEvent(toCallBackRequest(placementOrderCaseData, CaseData.builder().build()));
 
         checkUntil(() -> verify(notificationClient).sendEmail(
-            eq(ORDER_GENERATED_NOTIFICATION_TEMPLATE_FOR_LA_AND_DIGITAL_REPRESENTATIVES),//TODO - consider making a copy of this template and change the last name variable name
+            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),//TODO - consider making a copy of this template and change the last name variable name
             eq(LOCAL_AUTHORITY_1_INBOX),
             eq(ORDER_NOTIFICATION_PARAMETERS),
             eq(NOTIFICATION_REFERENCE)
         ));
 //        checkUntil(() -> verify(notificationClient).sendEmail(//TODO - uncomment this once test is passing - or more stable
-//            eq(ORDER_GENERATED_NOTIFICATION_TEMPLATE_FOR_LA_AND_DIGITAL_REPRESENTATIVES),
+//            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),//TODO - I think we can use the same template for these - they're identical
 //            eq(DEFAULT_ADMIN_EMAIL),
 //            eq(ORDER_NOTIFICATION_PARAMETERS),
 //            eq(NOTIFICATION_REFERENCE)
