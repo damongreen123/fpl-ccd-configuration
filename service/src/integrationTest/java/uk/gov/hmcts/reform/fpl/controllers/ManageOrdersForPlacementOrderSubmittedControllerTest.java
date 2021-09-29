@@ -20,13 +20,13 @@ import uk.gov.hmcts.reform.fpl.model.SentDocuments;
 import uk.gov.hmcts.reform.fpl.model.common.DocmosisDocument;
 import uk.gov.hmcts.reform.fpl.model.common.DocumentReference;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
-import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.model.order.generated.GeneratedOrder;
 import uk.gov.hmcts.reform.fpl.service.DocumentDownloadService;
 import uk.gov.hmcts.reform.fpl.service.UploadDocumentService;
 import uk.gov.hmcts.reform.fpl.service.ccd.CoreCaseDataService;
 import uk.gov.hmcts.reform.fpl.service.docmosis.DocmosisCoverDocumentsService;
+import uk.gov.hmcts.reform.fpl.testingsupport.IntegrationTestConstants;
 import uk.gov.hmcts.reform.sendletter.api.LetterWithPdfsRequest;
 import uk.gov.hmcts.reform.sendletter.api.SendLetterApi;
 import uk.gov.hmcts.reform.sendletter.api.SendLetterResponse;
@@ -81,16 +81,16 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
 
     private static final DocumentReference ORDER_DOCUMENT_REFERENCE = testDocumentReference();
 
-    private static final Respondent FATHER = Respondent.builder().party(RespondentParty.builder().firstName("Father").lastName("Jones").address(Address.builder().addressLine1("10 Father Road").build()).build()).build();//TODO - what if a parent has no address?
+    private static final Respondent FATHER = Respondent.builder().party(RespondentParty.builder().firstName("Father").lastName("Jones").address(Address.builder().addressLine1("10 Father Road").postcode("SG5 7IR").build()).build()).build();//TODO - what if a parent has no address?
     private static final Document FATHER_COVERSHEET_DOCUMENT = testDocument();
     private static final byte[] FATHER_COVERSHEET_BINARY = testDocumentBinaries();
 
-    private static final Respondent MOTHER = Respondent.builder().party(RespondentParty.builder().firstName("Mother").lastName("Jones").address(Address.builder().addressLine1("10 Mother Road").build()).build()).build();
+    private static final Respondent MOTHER = Respondent.builder().party(RespondentParty.builder().firstName("Mother").lastName("Jones").address(Address.builder().addressLine1("10 Mother Road").postcode("SG5 7IU").build()).build()).build();
     private static final Document MOTHER_COVERSHEET_DOCUMENT = testDocument();
     private static final byte[] MOTHER_COVERSHEET_BINARY = testDocumentBinaries();//TODO - group and organise these fields
 
     //TODO - potentially reusable fields
-    private static final Map<String, Object> ORDER_NOTIFICATION_PARAMETERS = Map.of(
+    private static final Map<String, Object> ORDER_EMAIL_PARAMETERS = Map.of(
 //        "callout", "^Theodore Bailey, " + TEST_FAMILY_MAN_NUMBER + ", hearing 1 Jan 2015",//TODO - check whether this is needed
         "courtName", DEFAULT_LA_COURT,
         "documentLink", Map.of("file", ENCODED_ORDER_DOCUMENT, "is_csv", false),
@@ -131,8 +131,11 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
 
     @BeforeEach
     void setUp() {
+        givenFplService();
+
         placementOrderCaseData = CaseData.builder()
             .id(TEST_CASE_ID)
+            .familyManCaseNumber(TEST_FAMILY_MAN_NUMBER)
             .caseLocalAuthority(LOCAL_AUTHORITY_1_CODE)
             .respondents1(wrapElements(FATHER, MOTHER))//TODO - later on, let's add more respondents and choose them from Tomasz's event
             .orderCollection(wrapElements(GeneratedOrder.builder()
@@ -160,7 +163,12 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
     @Test
     void shouldSendPlacementOrderNotificationToExpectedParties() {
         when(documentDownloadService.downloadDocument(anyString())).thenReturn(ORDER_NOTIFICATION_BINARY);//TODO - try to specify parameter
-        when(uploadDocumentService.uploadPDF(ORDER_NOTIFICATION_BINARY, ORDER_NOTIFICATION_DOCUMENT_REFERENCE.getFilename())).thenReturn(ORDER_NOTIFICATION_DOCUMENT);
+        when(uploadDocumentService.uploadPDF(ORDER_NOTIFICATION_BINARY, ORDER_NOTIFICATION_DOCUMENT_REFERENCE.getFilename()))
+            .thenReturn(ORDER_NOTIFICATION_DOCUMENT);
+        when(uploadDocumentService.uploadPDF(FATHER_COVERSHEET_BINARY, IntegrationTestConstants.COVERSHEET_PDF))
+            .thenReturn(FATHER_COVERSHEET_DOCUMENT);
+        when(uploadDocumentService.uploadPDF(MOTHER_COVERSHEET_BINARY, IntegrationTestConstants.COVERSHEET_PDF))
+            .thenReturn(MOTHER_COVERSHEET_DOCUMENT);
         when(documentService.createCoverDocuments(TEST_FAMILY_MAN_NUMBER, TEST_CASE_ID, FATHER.getParty(), ENGLISH))
             .thenReturn(DocmosisDocument.builder().bytes(FATHER_COVERSHEET_BINARY).build());
         when(documentService.createCoverDocuments(TEST_FAMILY_MAN_NUMBER, TEST_CASE_ID, MOTHER.getParty(), ENGLISH))
@@ -173,16 +181,16 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
 
         postSubmittedEvent(toCallBackRequest(placementOrderCaseData, CaseData.builder().build()));
 
+        //Check document mailed to parents
         checkUntil(() -> verify(sendLetterApi, times(2)).sendLetter(
             eq(SERVICE_AUTH_TOKEN),
             letterCaptor.capture()
         ));
-        assertThat(letterCaptor.getAllValues()).containsExactly(
-            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, FATHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY),//TODO - add coversheet if needed
-            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, MOTHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY)//TODO - add coversheet if needed
-        );
-
-        checkUntil(() -> verify(coreCaseDataService, times(2)).updateCase(eq(TEST_CASE_ID), caseDataDelta.capture()));
+        assertThat(letterCaptor.getAllValues()).usingRecursiveComparison().isEqualTo(List.of(
+            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, FATHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY),
+            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, MOTHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY)
+        ));
+        checkUntil(() -> verify(coreCaseDataService).updateCase(eq(TEST_CASE_ID), caseDataDelta.capture()));
         List<Element<SentDocuments>> documentsSent = mapper.convertValue(
             caseDataDelta.getValue().get("documentsSentToParties"), new TypeReference<>() {
             }
@@ -197,6 +205,8 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
             .containsExactly(documentSent(
                 MOTHER.getParty(), MOTHER_COVERSHEET_DOCUMENT, ORDER_NOTIFICATION_DOCUMENT, secondLetterId, now()
             ));
+
+        //TODO - check that email with A206 is sent to child representative
     }
 
     //TODO - test e-mail to respondents solicitors
@@ -205,7 +215,7 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
         checkUntil(() -> verify(notificationClient).sendEmail(
             eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),
             eq(recipient),
-            eq(ORDER_NOTIFICATION_PARAMETERS),
+            eq(ORDER_EMAIL_PARAMETERS),
             eq(NOTIFICATION_REFERENCE)
         ));
     }

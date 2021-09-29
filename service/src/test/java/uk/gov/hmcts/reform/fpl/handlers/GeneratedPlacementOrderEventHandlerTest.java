@@ -17,7 +17,7 @@ import uk.gov.hmcts.reform.fpl.model.notify.RecipientsRequest;
 import uk.gov.hmcts.reform.fpl.model.order.generated.GeneratedOrder;
 import uk.gov.hmcts.reform.fpl.service.CourtService;
 import uk.gov.hmcts.reform.fpl.service.LocalAuthorityRecipientsService;
-import uk.gov.hmcts.reform.fpl.service.SendLetterService;
+import uk.gov.hmcts.reform.fpl.service.SendDocumentService;
 import uk.gov.hmcts.reform.fpl.service.email.NotificationService;
 import uk.gov.hmcts.reform.fpl.service.email.content.OrderIssuedEmailContentProvider;
 import uk.gov.hmcts.reform.fpl.service.orders.history.SealedOrderHistoryService;
@@ -38,7 +38,6 @@ import static uk.gov.hmcts.reform.fpl.NotifyTemplates.PLACEMENT_ORDER_GENERATED_
 import static uk.gov.hmcts.reform.fpl.handlers.NotificationEventHandlerTestData.CAFCASS_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.fpl.handlers.NotificationEventHandlerTestData.LOCAL_AUTHORITY_CODE;
 import static uk.gov.hmcts.reform.fpl.handlers.NotificationEventHandlerTestData.LOCAL_AUTHORITY_EMAIL_ADDRESS;
-import static uk.gov.hmcts.reform.fpl.model.configuration.Language.ENGLISH;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testChild;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testDocumentReference;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testRespondent;
@@ -65,7 +64,7 @@ class GeneratedPlacementOrderEventHandlerTest {
     private CafcassLookupConfiguration cafcassLookupConfiguration;
 
     @Mock
-    private SendLetterService sendLetterService;
+    private SendDocumentService sendDocumentService;
 
     @InjectMocks
     private GeneratedPlacementOrderEventHandler underTest;
@@ -113,11 +112,7 @@ class GeneratedPlacementOrderEventHandlerTest {
 
         underTest.sendPlacementOrderNotification(new GeneratedPlacementOrderEvent(caseData, orderDocument, orderNotificationDocument, "Order title"));
 
-        verify(sendLetterService).send(orderNotificationDocument,
-            List.of(father.getValue().getParty(), mother.getValue().getParty()),
-            TEST_CASE_ID,
-            TEST_FAMILY_MAN_NUMBER,
-            ENGLISH);
+        verify(sendDocumentService).sendDocuments(caseData, List.of(orderNotificationDocument), List.of(father.getValue().getParty(), mother.getValue().getParty()));
     }
 
     //TODO - think about scenarios in which one parent doesn't exist or doesn't have an address

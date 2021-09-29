@@ -16,7 +16,7 @@ import uk.gov.hmcts.reform.fpl.model.notify.RecipientsRequest;
 import uk.gov.hmcts.reform.fpl.model.order.generated.GeneratedOrder;
 import uk.gov.hmcts.reform.fpl.service.CourtService;
 import uk.gov.hmcts.reform.fpl.service.LocalAuthorityRecipientsService;
-import uk.gov.hmcts.reform.fpl.service.SendLetterService;
+import uk.gov.hmcts.reform.fpl.service.SendDocumentService;
 import uk.gov.hmcts.reform.fpl.service.email.NotificationService;
 import uk.gov.hmcts.reform.fpl.service.email.content.OrderIssuedEmailContentProvider;
 import uk.gov.hmcts.reform.fpl.service.orders.history.SealedOrderHistoryService;
@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.fpl.NotifyTemplates.PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE;
-import static uk.gov.hmcts.reform.fpl.model.configuration.Language.ENGLISH;
 
 @Slf4j
 @Component
@@ -40,7 +39,7 @@ public class GeneratedPlacementOrderEventHandler {//TODO - maybe this should ext
     private final SealedOrderHistoryService sealedOrderHistoryService;
     private final CourtService courtService;
     private final CafcassLookupConfiguration cafcassLookupConfiguration;
-    private final SendLetterService sendLetterService;
+    private final SendDocumentService sendDocumentService;
 
     @EventListener
     public void sendPlacementOrderEmail(final GeneratedPlacementOrderEvent orderEvent) {
@@ -64,11 +63,7 @@ public class GeneratedPlacementOrderEventHandler {//TODO - maybe this should ext
             .map(Respondent::getParty)
             .collect(Collectors.toList());
 
-        sendLetterService.send(orderEvent.getOrderNotificationDocument(),
-            recipients,
-            caseData.getId(),
-            caseData.getFamilyManCaseNumber(),
-            ENGLISH);
+        sendDocumentService.sendDocuments(caseData, List.of(orderEvent.getOrderNotificationDocument()), recipients);
     }
 
     private void sendEmail(final CaseData caseData,
