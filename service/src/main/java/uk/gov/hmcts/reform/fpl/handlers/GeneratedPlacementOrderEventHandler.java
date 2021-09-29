@@ -7,20 +7,27 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.fpl.config.CafcassLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.events.order.GeneratedPlacementOrderEvent;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.Recipient;
+import uk.gov.hmcts.reform.fpl.model.Respondent;
 import uk.gov.hmcts.reform.fpl.model.common.DocumentReference;
+import uk.gov.hmcts.reform.fpl.model.common.Element;
 import uk.gov.hmcts.reform.fpl.model.notify.NotifyData;
 import uk.gov.hmcts.reform.fpl.model.notify.RecipientsRequest;
 import uk.gov.hmcts.reform.fpl.model.order.generated.GeneratedOrder;
 import uk.gov.hmcts.reform.fpl.service.CourtService;
 import uk.gov.hmcts.reform.fpl.service.LocalAuthorityRecipientsService;
+import uk.gov.hmcts.reform.fpl.service.SendLetterService;
 import uk.gov.hmcts.reform.fpl.service.email.NotificationService;
 import uk.gov.hmcts.reform.fpl.service.email.content.OrderIssuedEmailContentProvider;
 import uk.gov.hmcts.reform.fpl.service.orders.history.SealedOrderHistoryService;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.fpl.NotifyTemplates.PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE;
+import static uk.gov.hmcts.reform.fpl.model.configuration.Language.ENGLISH;
 
 @Slf4j
 @Component
@@ -33,6 +40,7 @@ public class GeneratedPlacementOrderEventHandler {//TODO - maybe this should ext
     private final SealedOrderHistoryService sealedOrderHistoryService;
     private final CourtService courtService;
     private final CafcassLookupConfiguration cafcassLookupConfiguration;
+    private final SendLetterService sendLetterService;
 
     @EventListener
     public void sendPlacementOrderEmail(final GeneratedPlacementOrderEvent orderEvent) {
@@ -44,6 +52,23 @@ public class GeneratedPlacementOrderEventHandler {//TODO - maybe this should ext
             orderDocument, lastGeneratedOrder.getChildren().get(0).getValue());
 
         sendEmail(caseData, notifyData);
+    }
+
+    @EventListener
+    public void sendPlacementOrderNotification(final GeneratedPlacementOrderEvent orderEvent) {
+        CaseData caseData = orderEvent.getCaseData();
+
+        //TODO - this is wrong and will be addressed later
+        List<Recipient> recipients = caseData.getAllRespondents().stream()
+            .map(Element::getValue)
+            .map(Respondent::getParty)
+            .collect(Collectors.toList());
+
+        sendLetterService.send(orderEvent.getOrderNotificationDocument(),
+            recipients,
+            caseData.getId(),
+            caseData.getFamilyManCaseNumber(),
+            ENGLISH);
     }
 
     private void sendEmail(final CaseData caseData,

@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.fpl.config.CafcassLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.events.order.GeneratedPlacementOrderEvent;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
+import uk.gov.hmcts.reform.fpl.model.Respondent;
 import uk.gov.hmcts.reform.fpl.model.common.DocumentReference;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
 import uk.gov.hmcts.reform.fpl.model.notify.PlacementOrderIssuedNotifyData;
@@ -16,6 +17,7 @@ import uk.gov.hmcts.reform.fpl.model.notify.RecipientsRequest;
 import uk.gov.hmcts.reform.fpl.model.order.generated.GeneratedOrder;
 import uk.gov.hmcts.reform.fpl.service.CourtService;
 import uk.gov.hmcts.reform.fpl.service.LocalAuthorityRecipientsService;
+import uk.gov.hmcts.reform.fpl.service.SendLetterService;
 import uk.gov.hmcts.reform.fpl.service.email.NotificationService;
 import uk.gov.hmcts.reform.fpl.service.email.content.OrderIssuedEmailContentProvider;
 import uk.gov.hmcts.reform.fpl.service.orders.history.SealedOrderHistoryService;
@@ -31,12 +33,15 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.fpl.Constants.DEFAULT_ADMIN_EMAIL;
 import static uk.gov.hmcts.reform.fpl.Constants.LOCAL_AUTHORITY_1_CODE;
 import static uk.gov.hmcts.reform.fpl.Constants.TEST_CASE_ID;
+import static uk.gov.hmcts.reform.fpl.Constants.TEST_FAMILY_MAN_NUMBER;
 import static uk.gov.hmcts.reform.fpl.NotifyTemplates.PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE;
 import static uk.gov.hmcts.reform.fpl.handlers.NotificationEventHandlerTestData.CAFCASS_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.fpl.handlers.NotificationEventHandlerTestData.LOCAL_AUTHORITY_CODE;
 import static uk.gov.hmcts.reform.fpl.handlers.NotificationEventHandlerTestData.LOCAL_AUTHORITY_EMAIL_ADDRESS;
+import static uk.gov.hmcts.reform.fpl.model.configuration.Language.ENGLISH;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testChild;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testDocumentReference;
+import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testRespondent;
 
 @ExtendWith(MockitoExtension.class)
 class GeneratedPlacementOrderEventHandlerTest {
@@ -59,16 +64,20 @@ class GeneratedPlacementOrderEventHandlerTest {
     @Mock
     private CafcassLookupConfiguration cafcassLookupConfiguration;
 
+    @Mock
+    private SendLetterService sendLetterService;
+
     @InjectMocks
     private GeneratedPlacementOrderEventHandler underTest;
 
     @Test
     void shouldEmailPlacementOrderToRelevantParties() {
         //TODO - consider putting these in @before method
-        CaseData caseData = CaseData.builder().id(TEST_CASE_ID).caseLocalAuthority(LOCAL_AUTHORITY_1_CODE).build();
+        CaseData caseData = CaseData.builder().id(TEST_CASE_ID).familyManCaseNumber(TEST_FAMILY_MAN_NUMBER).caseLocalAuthority(LOCAL_AUTHORITY_1_CODE).build();
         when(localAuthorityRecipients.getRecipients(RecipientsRequest.builder().caseData(caseData).build()))
             .thenReturn(Set.of(LOCAL_AUTHORITY_EMAIL_ADDRESS));
         DocumentReference orderDocument = testDocumentReference();
+        DocumentReference orderNotificationDocument = testDocumentReference();
         Element<Child> child = testChild();
         given(sealedOrderHistoryService.lastGeneratedOrder(any()))
             .willReturn(GeneratedOrder.builder().children(List.of(child)).build());
@@ -78,7 +87,7 @@ class GeneratedPlacementOrderEventHandlerTest {
         when(courtService.getCourtEmail(caseData)).thenReturn(DEFAULT_ADMIN_EMAIL);
         when(cafcassLookupConfiguration.getCafcass(LOCAL_AUTHORITY_1_CODE)).thenReturn(new CafcassLookupConfiguration.Cafcass(LOCAL_AUTHORITY_CODE, CAFCASS_EMAIL_ADDRESS));
 
-        underTest.sendPlacementOrderEmail(new GeneratedPlacementOrderEvent(caseData, orderDocument, "Order title"));
+        underTest.sendPlacementOrderEmail(new GeneratedPlacementOrderEvent(caseData, orderDocument, orderNotificationDocument, "Order title"));
 
         verify(notificationService).sendEmail(
             PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE,
@@ -87,5 +96,30 @@ class GeneratedPlacementOrderEventHandlerTest {
             TEST_CASE_ID
         );
     }
+
+    @Test
+    void shouldSendPlacementOrderNotificationToRelevantParties_WhenParentsAreNotRepresented() {
+        Element<Respondent> father = testRespondent("Father", "Jones");
+        Element<Respondent> mother = testRespondent("Mother", "Jones");
+
+        CaseData caseData = CaseData.builder()
+            .id(TEST_CASE_ID)
+            .familyManCaseNumber(TEST_FAMILY_MAN_NUMBER)
+            .caseLocalAuthority(LOCAL_AUTHORITY_1_CODE)
+            .respondents1(List.of(father, mother))
+            .build();
+        DocumentReference orderDocument = testDocumentReference();
+        DocumentReference orderNotificationDocument = testDocumentReference();
+
+        underTest.sendPlacementOrderNotification(new GeneratedPlacementOrderEvent(caseData, orderDocument, orderNotificationDocument, "Order title"));
+
+        verify(sendLetterService).send(orderNotificationDocument,
+            List.of(father.getValue().getParty(), mother.getValue().getParty()),
+            TEST_CASE_ID,
+            TEST_FAMILY_MAN_NUMBER,
+            ENGLISH);
+    }
+
+    //TODO - think about scenarios in which one parent doesn't exist or doesn't have an address
 
 }

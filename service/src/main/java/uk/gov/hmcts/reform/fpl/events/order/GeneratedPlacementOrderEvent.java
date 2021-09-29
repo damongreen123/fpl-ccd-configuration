@@ -9,6 +9,7 @@ public class GeneratedPlacementOrderEvent implements ManageOrdersEvent {
 
     CaseData caseData;
     DocumentReference orderDocument;
+    DocumentReference orderNotificationDocument;
     String orderTitle;//TODO - I may not need this
 
 }

@@ -35,6 +35,7 @@ public class ManageOrdersEventBuilder {
             if (A70_PLACEMENT_ORDER.name().equals(lastGeneratedOrder.getOrderType())) {
                 return new GeneratedPlacementOrderEvent(caseData,
                     lastGeneratedOrder.getDocument(),
+                    lastGeneratedOrder.getNotificationDocument(),
                     lastGeneratedOrder.asLabel());
             } else {
                 return new GeneratedOrderEvent(
