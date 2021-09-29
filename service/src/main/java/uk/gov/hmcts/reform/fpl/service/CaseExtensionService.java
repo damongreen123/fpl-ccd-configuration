@@ -63,9 +63,8 @@ public class CaseExtensionService {
 
             // Amend so that this checks the new date field
             LocalDate completedDate = getCaseShouldBeCompletedByDate(caseData);
-            sb.append(String.format("Child %d: %s: %s", i + 1, child.asLabel(),
+            sb.append(String.format("Child %d: %s: %s <br/>", i + 1, child.asLabel(),
                 formatLocalDateToString(completedDate, DATE)));
-            sb.append("\n");
         }
 
         return sb.toString();
