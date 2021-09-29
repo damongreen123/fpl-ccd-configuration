@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.fpl.service.email.content;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -40,6 +39,7 @@ import uk.gov.hmcts.reform.fpl.utils.ChildSelectionUtils;
 import uk.gov.hmcts.reform.fpl.utils.EmailNotificationHelper;
 import uk.gov.hmcts.reform.fpl.utils.FixedTimeConfiguration;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -81,7 +81,8 @@ import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testDocumentReference
 })
 class OrderIssuedEmailContentProviderTest extends AbstractEmailContentProviderTest {
 
-    private static final Child TEST_CHILD = Child.builder().party(ChildParty.builder().firstName("Theodore").lastName("Bailey").build()).build();
+    private static final Child TEST_CHILD = Child.builder().party(
+        ChildParty.builder().firstName("Theodore").lastName("Bailey").dateOfBirth(LocalDate.now()).build()).build();
     private static final CaseData CASE_DATA = CaseData.builder()
         .id(Long.valueOf(CASE_REFERENCE))
         .caseLocalAuthority(LOCAL_AUTHORITY_CODE)
@@ -100,15 +101,7 @@ class OrderIssuedEmailContentProviderTest extends AbstractEmailContentProviderTe
     private OrderIssuedEmailContentProvider underTest;
 
     @MockBean
-    private EmailNotificationHelper helper;
-
-    @MockBean
     private OrderIssuedEmailContentProviderTypeOfOrderCalculator calculator;
-
-    @BeforeEach
-    void setUp() {
-        when(helper.getEldestChildLastName(CASE_DATA.getAllChildren())).thenReturn("Jones");//TODO - change this to Bailey to match actual data or use real object
-    }
 
     @Test
     void shouldBuildGeneratedOrderParametersWithCaseUrl() {
@@ -158,7 +151,6 @@ class OrderIssuedEmailContentProviderTest extends AbstractEmailContentProviderTe
             .build();
 
         when(calculator.getTypeOfOrder(data, CMO)).thenReturn("case management order");
-        when(helper.getEldestChildLastName(data.getAllChildren())).thenReturn("Jones");//TODO - we might not need this line
 
         NotifyData expectedParameters = getExpectedCMOParameters(CMO.getLabel());
         NotifyData actualParameters = underTest.getNotifyDataForCMO(data, testDocument, CMO);

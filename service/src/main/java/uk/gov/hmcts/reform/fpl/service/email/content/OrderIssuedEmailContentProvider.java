@@ -88,10 +88,10 @@ public class OrderIssuedEmailContentProvider extends AbstractEmailContentProvide
 
         return PlacementOrderIssuedNotifyData.builder()
 //            .callout("^" + buildSubjectLineWithHearingBookingDateSuffix(//TODO - I'll leave this empty for now until we get confirmation - tell Susheel this will take a bit of work
-//                caseData.getFamilyManCaseNumber(), child, hearing))//TODO - revisit
+//                caseData.getFamilyManCaseNumber(), child, hearing))
             .caseUrl(getCaseUrl(caseData.getId(), ORDERS))
             .courtName(courtService.getCourtName(caseData))
-            .documentLink(linkToAttachedDocument(orderDocument))//TODO - revisit this for adequate format
+            .documentLink(linkToAttachedDocument(orderDocument))
             .childLastName(childPartyInfo.getLastName())
             .build();
     }

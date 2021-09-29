@@ -18,10 +18,10 @@ import uk.gov.service.notify.NotificationClient;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.fpl.Constants.DEFAULT_LA_COURT;
 import static uk.gov.hmcts.reform.fpl.Constants.LOCAL_AUTHORITY_1_CODE;
@@ -42,22 +42,18 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
     private static final Order ORDER = A70_PLACEMENT_ORDER;
 
     //TODO - copied from helper class
-    private static final byte[] ORDER_DOCUMENT = {1, 2, 3, 4, 5};
     private static final byte[] ORDER_BINARY = testDocumentBinaries();
     private static final String ENCODED_ORDER_DOCUMENT = new String(Base64.encodeBase64(ORDER_BINARY), ISO_8859_1);
 
     private static final DocumentReference ORDER_DOCUMENT_REFERENCE = testDocumentReference();
 
     //TODO - potentially reusable fields
-    private static final long ASYNC_METHOD_CALL_TIMEOUT = 10000;
     private static final Map<String, Object> ORDER_NOTIFICATION_PARAMETERS = Map.of(
-//        "callout", "^Theodore Bailey, " + TEST_FAMILY_MAN_NUMBER + ", hearing 1 Jan 2015",//TODO - uncomment after more stable test
+//        "callout", "^Theodore Bailey, " + TEST_FAMILY_MAN_NUMBER + ", hearing 1 Jan 2015",//TODO - check whether this is needed
         "courtName", DEFAULT_LA_COURT,
-        "documentLink", Map.of("file", ENCODED_ORDER_DOCUMENT, "is_csv", false),//TODO - check what gov notify needs - not sure this is right
-        //TODO - do all these actors have case access? if so, send link. if not, send file
-        //TODO - where's the slash on the URL above?
-        "caseUrl", "http://fake-url/cases/case-details/" + TEST_CASE_ID + "#Orders",//TODO - revisit
-        "childLastName", "Bailey"//TODO - this should really be the child last name - get stability first
+        "documentLink", Map.of("file", ENCODED_ORDER_DOCUMENT, "is_csv", false),//TODO - do all these actors have case access? if so, send link. if not, send file - confirm with Susheel
+        "caseUrl", "http://fake-url/cases/case-details/" + TEST_CASE_ID + "#Orders",
+        "childLastName", "Bailey"
     );
     private static final String NOTIFICATION_REFERENCE = "localhost/" + TEST_CASE_ID;
 
@@ -92,7 +88,7 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
         postSubmittedEvent(toCallBackRequest(placementOrderCaseData, CaseData.builder().build()));
 
         checkUntil(() -> verify(notificationClient).sendEmail(
-            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),//TODO - consider making a copy of this template and change the last name variable name
+            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),
             eq(LOCAL_AUTHORITY_1_INBOX),
             eq(ORDER_NOTIFICATION_PARAMETERS),
             eq(NOTIFICATION_REFERENCE)
@@ -103,7 +99,7 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
 //            eq(ORDER_NOTIFICATION_PARAMETERS),
 //            eq(NOTIFICATION_REFERENCE)
 //        ));
-//        verifyNoMoreInteractions(notificationClient);//TODO - bring this back once it's stable
+        verifyNoMoreInteractions(notificationClient);
     }
 
 }

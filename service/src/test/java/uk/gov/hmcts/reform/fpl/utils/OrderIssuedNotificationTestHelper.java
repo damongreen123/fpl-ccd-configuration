@@ -45,7 +45,7 @@ public class OrderIssuedNotificationTestHelper {
             .courtName(EXAMPLE_COURT)
             .documentLink("http://fake-url/testUrl")
             .caseUrl("http://fake-url/cases/case-details/12345#Orders")
-            .lastName("Jones")
+            .lastName("Bailey")
             .build();
     }
 
@@ -56,7 +56,7 @@ public class OrderIssuedNotificationTestHelper {
             .courtName(EXAMPLE_COURT)
             .documentLink("http://fake-url/testUrl")
             .caseUrl("http://fake-url/cases/case-details/12345#Orders")
-            .lastName("Jones")
+            .lastName("Bailey")
             .build();
     }
 
@@ -67,7 +67,7 @@ public class OrderIssuedNotificationTestHelper {
             .callout(withCallout ? callout : "")
             .courtName(EXAMPLE_COURT)
             .documentLink(Map.of("file", ENCODED_PDF, "is_csv", false))
-            .lastName("Jones")
+            .lastName("Bailey")
             .build();
     }
 
@@ -75,7 +75,7 @@ public class OrderIssuedNotificationTestHelper {
         return PlacementOrderIssuedNotifyData.builder()
 //            .callout(childCallout)//TODO - leave this out for now - until we get confirmation
             .courtName(EXAMPLE_COURT)
-            .caseUrl("http://fake-url/cases/case-details/12345#Orders")//TODO
+            .caseUrl("http://fake-url/cases/case-details/12345#Orders")
             .documentLink(Map.of("file", ENCODED_PDF, "is_csv", false))//TODO - this may change depending on who the e-mail goes to - whether they have case access or not
             .childLastName("Bailey")
             .build();
