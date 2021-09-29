@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.fpl.config.CafcassLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.events.order.GeneratedPlacementOrderEvent;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.common.DocumentReference;
@@ -31,6 +32,7 @@ public class GeneratedPlacementOrderEventHandler {//TODO - maybe this should ext
     private final OrderIssuedEmailContentProvider orderIssuedEmailContentProvider;
     private final SealedOrderHistoryService sealedOrderHistoryService;
     private final CourtService courtService;
+    private final CafcassLookupConfiguration cafcassLookupConfiguration;
 
     @EventListener
     public void sendPlacementOrderEmail(final GeneratedPlacementOrderEvent orderEvent) {
@@ -56,6 +58,9 @@ public class GeneratedPlacementOrderEventHandler {//TODO - maybe this should ext
 
         //Admin
         recipients.add(courtService.getCourtEmail(caseData));
+
+        //CAFCASS
+        recipients.add(cafcassLookupConfiguration.getCafcass(caseData.getCaseLocalAuthority()).getEmail());
 
         notificationService.sendEmail(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE,
             recipients,

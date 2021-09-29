@@ -30,6 +30,7 @@ import static uk.gov.hmcts.reform.fpl.Constants.LOCAL_AUTHORITY_1_INBOX;
 import static uk.gov.hmcts.reform.fpl.Constants.TEST_CASE_ID;
 import static uk.gov.hmcts.reform.fpl.NotifyTemplates.PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE;
 import static uk.gov.hmcts.reform.fpl.model.order.Order.A70_PLACEMENT_ORDER;
+import static uk.gov.hmcts.reform.fpl.testingsupport.IntegrationTestConstants.CAFCASS_EMAIL;
 import static uk.gov.hmcts.reform.fpl.utils.AssertionHelper.checkUntil;
 import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.wrapElements;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testDocumentBinaries;
@@ -88,20 +89,19 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
 
         postSubmittedEvent(toCallBackRequest(placementOrderCaseData, CaseData.builder().build()));
 
-        checkUntil(() -> verify(notificationClient).sendEmail(
-            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),
-            eq(LOCAL_AUTHORITY_1_INBOX),
-            eq(ORDER_NOTIFICATION_PARAMETERS),
-            eq(NOTIFICATION_REFERENCE)
-        ));
-        checkUntil(() -> verify(notificationClient).sendEmail(
-            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),
-            eq(DEFAULT_ADMIN_EMAIL),
-            eq(ORDER_NOTIFICATION_PARAMETERS),
-            eq(NOTIFICATION_REFERENCE)
-        ));
-        //TODO - add CAFCASS
+        checkEmailWithOrderWasSent(LOCAL_AUTHORITY_1_INBOX);
+        checkEmailWithOrderWasSent(DEFAULT_ADMIN_EMAIL);
+        checkEmailWithOrderWasSent(CAFCASS_EMAIL);
         verifyNoMoreInteractions(notificationClient);
+    }
+
+    private void checkEmailWithOrderWasSent(String recipient) {
+        checkUntil(() -> verify(notificationClient).sendEmail(
+            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),
+            eq(recipient),
+            eq(ORDER_NOTIFICATION_PARAMETERS),
+            eq(NOTIFICATION_REFERENCE)
+        ));
     }
 
 }
