@@ -76,7 +76,7 @@ public class OrderIssuedNotificationTestHelper {
 //            .callout(childCallout)//TODO - leave this out for now - until we get confirmation
             .courtName(EXAMPLE_COURT)
             .caseUrl("http://fake-url/cases/case-details/12345#Orders")
-            .documentLink(Map.of("file", ENCODED_PDF, "is_csv", false))//TODO - this may change depending on who the e-mail goes to - whether they have case access or not
+            .documentLink(Map.of("file", ENCODED_PDF, "is_csv", false))
             .childLastName("Bailey")
             .build();
     }

@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.fpl.Constants.DEFAULT_ADMIN_EMAIL;
 import static uk.gov.hmcts.reform.fpl.Constants.DEFAULT_LA_COURT;
 import static uk.gov.hmcts.reform.fpl.Constants.LOCAL_AUTHORITY_1_CODE;
 import static uk.gov.hmcts.reform.fpl.Constants.LOCAL_AUTHORITY_1_INBOX;
@@ -51,7 +52,7 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
     private static final Map<String, Object> ORDER_NOTIFICATION_PARAMETERS = Map.of(
 //        "callout", "^Theodore Bailey, " + TEST_FAMILY_MAN_NUMBER + ", hearing 1 Jan 2015",//TODO - check whether this is needed
         "courtName", DEFAULT_LA_COURT,
-        "documentLink", Map.of("file", ENCODED_ORDER_DOCUMENT, "is_csv", false),//TODO - do all these actors have case access? if so, send link. if not, send file - confirm with Susheel
+        "documentLink", Map.of("file", ENCODED_ORDER_DOCUMENT, "is_csv", false),
         "caseUrl", "http://fake-url/cases/case-details/" + TEST_CASE_ID + "#Orders",
         "childLastName", "Bailey"
     );
@@ -93,12 +94,13 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
             eq(ORDER_NOTIFICATION_PARAMETERS),
             eq(NOTIFICATION_REFERENCE)
         ));
-//        checkUntil(() -> verify(notificationClient).sendEmail(//TODO - uncomment this once test is passing - or more stable
-//            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),//TODO - I think we can use the same template for these - they're identical
-//            eq(DEFAULT_ADMIN_EMAIL),
-//            eq(ORDER_NOTIFICATION_PARAMETERS),
-//            eq(NOTIFICATION_REFERENCE)
-//        ));
+        checkUntil(() -> verify(notificationClient).sendEmail(
+            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),
+            eq(DEFAULT_ADMIN_EMAIL),
+            eq(ORDER_NOTIFICATION_PARAMETERS),
+            eq(NOTIFICATION_REFERENCE)
+        ));
+        //TODO - add CAFCASS
         verifyNoMoreInteractions(notificationClient);
     }
 
