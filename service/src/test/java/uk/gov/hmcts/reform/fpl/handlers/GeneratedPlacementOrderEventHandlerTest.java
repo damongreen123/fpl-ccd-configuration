@@ -42,12 +42,11 @@ class GeneratedPlacementOrderEventHandlerTest {
     @Test
     void shouldEmailPlacementOrderToRelevantParties() {
         CaseData caseData = CaseData.builder().id(TEST_CASE_ID).build();
-        when(localAuthorityRecipients.getRecipients(
-            RecipientsRequest.builder().caseData(caseData).build()
-        )).thenReturn(Set.of(LOCAL_AUTHORITY_EMAIL_ADDRESS));
+        when(localAuthorityRecipients.getRecipients(RecipientsRequest.builder().caseData(caseData).build()))
+            .thenReturn(Set.of(LOCAL_AUTHORITY_EMAIL_ADDRESS));
         DocumentReference orderDocument = testDocumentReference();
         PlacementOrderIssuedNotifyData notifyData = mock(PlacementOrderIssuedNotifyData.class);
-        when(orderIssuedEmailContentProvider.getNotifyDataForPlacementOrder(caseData, orderDocument)).thenReturn(notifyData);
+        when(orderIssuedEmailContentProvider.getNotifyDataForPlacementOrder(caseData, orderDocument, null)).thenReturn(notifyData);//TODO - revisit child mock
 
         underTest.notifyParties(new GeneratedPlacementOrderEvent(caseData, orderDocument, "Order title"));
 

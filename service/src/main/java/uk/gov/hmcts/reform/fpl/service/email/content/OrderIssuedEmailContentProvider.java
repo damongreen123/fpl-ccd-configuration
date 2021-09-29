@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.fpl.enums.IssuedOrderType;
 import uk.gov.hmcts.reform.fpl.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.Child;
+import uk.gov.hmcts.reform.fpl.model.ChildParty;
 import uk.gov.hmcts.reform.fpl.model.HearingBooking;
 import uk.gov.hmcts.reform.fpl.model.common.DocumentReference;
 import uk.gov.hmcts.reform.fpl.model.notify.OrderIssuedNotifyData;
@@ -81,8 +83,17 @@ public class OrderIssuedEmailContentProvider extends AbstractEmailContentProvide
             .build();
     }
 
-    public PlacementOrderIssuedNotifyData getNotifyDataForPlacementOrder(CaseData caseData, DocumentReference orderDocument) {
-        return null;//TODO
+    public PlacementOrderIssuedNotifyData getNotifyDataForPlacementOrder(CaseData caseData, DocumentReference orderDocument, Child child) {
+        ChildParty childPartyInfo = child.getParty();
+
+        return PlacementOrderIssuedNotifyData.builder()
+//            .callout("^" + buildSubjectLineWithHearingBookingDateSuffix(//TODO - I'll leave this empty for now until we get confirmation - tell Susheel this will take a bit of work
+//                caseData.getFamilyManCaseNumber(), child, hearing))//TODO - revisit
+            .caseUrl(getCaseUrl(caseData.getId(), ORDERS))
+            .courtName(courtService.getCourtName(caseData))
+            .documentLink(linkToAttachedDocument(orderDocument))//TODO - revisit this for adequate format
+            .childLastName(childPartyInfo.getLastName())
+            .build();
     }
 
 }

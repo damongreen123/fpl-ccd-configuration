@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.fpl.utils;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 import uk.gov.hmcts.reform.fpl.model.notify.OrderIssuedNotifyData;
+import uk.gov.hmcts.reform.fpl.model.notify.PlacementOrderIssuedNotifyData;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,6 +20,8 @@ public class OrderIssuedNotificationTestHelper {
     private static final String callout = "^Jones, SACCCCCCCC5676576567, hearing " + LocalDateTime.now().plusMonths(3)
         .toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).localizedBy(Locale.UK));
     private static final String cmoCallout = "^Jones, SACCCCCCCC5676576567, hearing " + LocalDateTime.now().minusDays(3)
+        .toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).localizedBy(Locale.UK));
+    private static final String childCallout = "^Bailey, SACCCCCCCC5676576567, hearing " + LocalDateTime.now().plusMonths(3)
         .toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).localizedBy(Locale.UK));
     private static final String ENCODED_PDF = new String(Base64.encodeBase64(PDF), ISO_8859_1);
 
@@ -65,6 +68,16 @@ public class OrderIssuedNotificationTestHelper {
             .courtName(EXAMPLE_COURT)
             .documentLink(Map.of("file", ENCODED_PDF, "is_csv", false))
             .lastName("Jones")
+            .build();
+    }
+
+    public static PlacementOrderIssuedNotifyData getExpectedParametersForPlacementOrder() {
+        return PlacementOrderIssuedNotifyData.builder()
+//            .callout(childCallout)//TODO - leave this out for now - until we get confirmation
+            .courtName(EXAMPLE_COURT)
+            .caseUrl("http://fake-url/cases/case-details/12345#Orders")//TODO
+            .documentLink(Map.of("file", ENCODED_PDF, "is_csv", false))//TODO - this may change depending on who the e-mail goes to - whether they have case access or not
+            .childLastName("Bailey")
             .build();
     }
 

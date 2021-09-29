@@ -7,10 +7,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.Child;
+import uk.gov.hmcts.reform.fpl.model.ChildParty;
 import uk.gov.hmcts.reform.fpl.model.HearingBooking;
 import uk.gov.hmcts.reform.fpl.model.Respondent;
 import uk.gov.hmcts.reform.fpl.model.RespondentParty;
 import uk.gov.hmcts.reform.fpl.model.notify.NotifyData;
+import uk.gov.hmcts.reform.fpl.model.notify.PlacementOrderIssuedNotifyData;
 import uk.gov.hmcts.reform.fpl.selectors.ChildrenSmartSelector;
 import uk.gov.hmcts.reform.fpl.service.AppointedGuardianFormatter;
 import uk.gov.hmcts.reform.fpl.service.ChildrenService;
@@ -56,6 +59,7 @@ import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.element;
 import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.wrapElements;
 import static uk.gov.hmcts.reform.fpl.utils.OrderIssuedNotificationTestHelper.getExpectedCMOParameters;
 import static uk.gov.hmcts.reform.fpl.utils.OrderIssuedNotificationTestHelper.getExpectedParameters;
+import static uk.gov.hmcts.reform.fpl.utils.OrderIssuedNotificationTestHelper.getExpectedParametersForPlacementOrder;
 import static uk.gov.hmcts.reform.fpl.utils.OrderIssuedNotificationTestHelper.getExpectedParametersForRepresentatives;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.DOCUMENT_CONTENT;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testDocumentReference;
@@ -77,6 +81,7 @@ import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testDocumentReference
 })
 class OrderIssuedEmailContentProviderTest extends AbstractEmailContentProviderTest {
 
+    private static final Child TEST_CHILD = Child.builder().party(ChildParty.builder().firstName("Theodore").lastName("Bailey").build()).build();
     private static final CaseData CASE_DATA = CaseData.builder()
         .id(Long.valueOf(CASE_REFERENCE))
         .caseLocalAuthority(LOCAL_AUTHORITY_CODE)
@@ -88,6 +93,7 @@ class OrderIssuedEmailContentProviderTest extends AbstractEmailContentProviderTe
         .respondents1(wrapElements(Respondent.builder()
             .party(RespondentParty.builder().lastName("Jones").build())
             .build()))
+        .children1(wrapElements(TEST_CHILD))
         .build();
 
     @Autowired
@@ -101,7 +107,7 @@ class OrderIssuedEmailContentProviderTest extends AbstractEmailContentProviderTe
 
     @BeforeEach
     void setUp() {
-        when(helper.getEldestChildLastName(CASE_DATA.getAllChildren())).thenReturn("Jones");
+        when(helper.getEldestChildLastName(CASE_DATA.getAllChildren())).thenReturn("Jones");//TODO - change this to Bailey to match actual data or use real object
     }
 
     @Test
@@ -152,11 +158,21 @@ class OrderIssuedEmailContentProviderTest extends AbstractEmailContentProviderTe
             .build();
 
         when(calculator.getTypeOfOrder(data, CMO)).thenReturn("case management order");
-        when(helper.getEldestChildLastName(data.getAllChildren())).thenReturn("Jones");
+        when(helper.getEldestChildLastName(data.getAllChildren())).thenReturn("Jones");//TODO - we might not need this line
 
         NotifyData expectedParameters = getExpectedCMOParameters(CMO.getLabel());
         NotifyData actualParameters = underTest.getNotifyDataForCMO(data, testDocument, CMO);
 
         assertThat(actualParameters).isEqualTo(expectedParameters);
     }
+
+    @Test
+    void shouldBuildPlacementOrderNotifyData() {
+        given(documentDownloadService.downloadDocument(anyString())).willReturn(DOCUMENT_CONTENT);
+
+        PlacementOrderIssuedNotifyData notifyData = underTest.getNotifyDataForPlacementOrder(CASE_DATA, testDocument, TEST_CHILD);
+
+        assertThat(notifyData).isEqualTo(getExpectedParametersForPlacementOrder());
+    }
+
 }
