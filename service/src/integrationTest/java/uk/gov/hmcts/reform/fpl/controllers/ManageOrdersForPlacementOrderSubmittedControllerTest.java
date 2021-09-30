@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.fpl.service.DocumentDownloadService;
 import uk.gov.hmcts.reform.fpl.service.UploadDocumentService;
 import uk.gov.hmcts.reform.fpl.service.ccd.CoreCaseDataService;
 import uk.gov.hmcts.reform.fpl.service.docmosis.DocmosisCoverDocumentsService;
-import uk.gov.hmcts.reform.fpl.testingsupport.IntegrationTestConstants;
 import uk.gov.hmcts.reform.sendletter.api.LetterWithPdfsRequest;
 import uk.gov.hmcts.reform.sendletter.api.SendLetterApi;
 import uk.gov.hmcts.reform.sendletter.api.SendLetterResponse;
@@ -39,7 +38,6 @@ import java.util.UUID;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -55,6 +53,7 @@ import static uk.gov.hmcts.reform.fpl.NotifyTemplates.PLACEMENT_ORDER_GENERATED_
 import static uk.gov.hmcts.reform.fpl.model.configuration.Language.ENGLISH;
 import static uk.gov.hmcts.reform.fpl.model.order.Order.A70_PLACEMENT_ORDER;
 import static uk.gov.hmcts.reform.fpl.testingsupport.IntegrationTestConstants.CAFCASS_EMAIL;
+import static uk.gov.hmcts.reform.fpl.testingsupport.IntegrationTestConstants.COVERSHEET_PDF;
 import static uk.gov.hmcts.reform.fpl.utils.AssertionHelper.checkUntil;
 import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.wrapElements;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.documentSent;
@@ -71,6 +70,7 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
     private static final Order ORDER = A70_PLACEMENT_ORDER;
 
     //TODO - copied from helper class
+    private static final DocumentReference ORDER_DOCUMENT_REFERENCE = testDocumentReference();
     private static final byte[] ORDER_BINARY = testDocumentBinaries();
     private static final String ENCODED_ORDER_DOCUMENT = new String(Base64.encodeBase64(ORDER_BINARY), ISO_8859_1);
 
@@ -79,7 +79,6 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
     private static final byte[] ORDER_NOTIFICATION_BINARY = testDocumentBinaries();
     private static final String ENCODED_ORDER_NOTIFICATION_DOCUMENT = new String(Base64.encodeBase64(ORDER_NOTIFICATION_BINARY), ISO_8859_1);
 
-    private static final DocumentReference ORDER_DOCUMENT_REFERENCE = testDocumentReference();
 
     private static final Respondent FATHER = Respondent.builder().party(RespondentParty.builder().firstName("Father").lastName("Jones").address(Address.builder().addressLine1("10 Father Road").postcode("SG5 7IR").build()).build()).build();//TODO - what if a parent has no address?
     private static final Document FATHER_COVERSHEET_DOCUMENT = testDocument();
@@ -149,25 +148,14 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
     }
 
     @Test
-    void shouldSendPlacementOrderByEmailToExpectedParties() {//TODO - maybe I can have a PostSender Test Helper which sets up all mocks for me
-        when(documentDownloadService.downloadDocument(anyString())).thenReturn(ORDER_BINARY);//TODO - try to specify parameter
-
-        postSubmittedEvent(toCallBackRequest(placementOrderCaseData, CaseData.builder().build()));
-
-        checkEmailWithOrderWasSent(LOCAL_AUTHORITY_1_INBOX);
-        checkEmailWithOrderWasSent(DEFAULT_ADMIN_EMAIL);
-        checkEmailWithOrderWasSent(CAFCASS_EMAIL);
-        verifyNoMoreInteractions(notificationClient);
-    }
-
-    @Test
-    void shouldSendPlacementOrderNotificationToExpectedParties() {
-        when(documentDownloadService.downloadDocument(anyString())).thenReturn(ORDER_NOTIFICATION_BINARY);//TODO - try to specify parameter
+    void shouldSendPlacementOrderDocumentOrNotificationToExpectedParties() {//TODO - maybe I can have a PostSender Test Helper which sets up all mocks for me
+        when(documentDownloadService.downloadDocument(ORDER_DOCUMENT_REFERENCE.getBinaryUrl())).thenReturn(ORDER_BINARY);//TODO - try to specify parameter
+        when(documentDownloadService.downloadDocument(ORDER_NOTIFICATION_DOCUMENT_REFERENCE.getBinaryUrl())).thenReturn(ORDER_NOTIFICATION_BINARY);//TODO - try to specify parameter
         when(uploadDocumentService.uploadPDF(ORDER_NOTIFICATION_BINARY, ORDER_NOTIFICATION_DOCUMENT_REFERENCE.getFilename()))
             .thenReturn(ORDER_NOTIFICATION_DOCUMENT);
-        when(uploadDocumentService.uploadPDF(FATHER_COVERSHEET_BINARY, IntegrationTestConstants.COVERSHEET_PDF))
+        when(uploadDocumentService.uploadPDF(FATHER_COVERSHEET_BINARY, COVERSHEET_PDF))
             .thenReturn(FATHER_COVERSHEET_DOCUMENT);
-        when(uploadDocumentService.uploadPDF(MOTHER_COVERSHEET_BINARY, IntegrationTestConstants.COVERSHEET_PDF))
+        when(uploadDocumentService.uploadPDF(MOTHER_COVERSHEET_BINARY, COVERSHEET_PDF))
             .thenReturn(MOTHER_COVERSHEET_DOCUMENT);
         when(documentService.createCoverDocuments(TEST_FAMILY_MAN_NUMBER, TEST_CASE_ID, FATHER.getParty(), ENGLISH))
             .thenReturn(DocmosisDocument.builder().bytes(FATHER_COVERSHEET_BINARY).build());
@@ -181,21 +169,27 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
 
         postSubmittedEvent(toCallBackRequest(placementOrderCaseData, CaseData.builder().build()));
 
+        //A70
+        checkEmailWithOrderWasSent(LOCAL_AUTHORITY_1_INBOX);
+        checkEmailWithOrderWasSent(DEFAULT_ADMIN_EMAIL);
+        checkEmailWithOrderWasSent(CAFCASS_EMAIL);
+        verifyNoMoreInteractions(notificationClient);
+
+        //A206
         //Check document mailed to parents
-        checkUntil(() -> verify(sendLetterApi, times(2)).sendLetter(
-            eq(SERVICE_AUTH_TOKEN),
-            letterCaptor.capture()
-        ));
-        assertThat(letterCaptor.getAllValues()).usingRecursiveComparison().isEqualTo(List.of(
-            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, FATHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY),
-            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, MOTHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY)
-        ));
+        checkOrderNotificationLetterWasMailedToParents();
+        checkCaseDataHasReferenceToLetters(firstLetterId, secondLetterId);
+
+        //TODO - check that email with A206 is sent to child representative
+    }
+
+    private void checkCaseDataHasReferenceToLetters(UUID firstLetterId, UUID secondLetterId) {
         checkUntil(() -> verify(coreCaseDataService).updateCase(eq(TEST_CASE_ID), caseDataDelta.capture()));
         List<Element<SentDocuments>> documentsSent = mapper.convertValue(
             caseDataDelta.getValue().get("documentsSentToParties"), new TypeReference<>() {
             }
         );
-        assertThat(documentsSent.get(0).getValue().getDocumentsSentToParty())//TODO - assert list, not individual items
+        assertThat(documentsSent.get(0).getValue().getDocumentsSentToParty())
             .extracting(Element::getValue)
             .containsExactly(documentSent(
                 FATHER.getParty(), FATHER_COVERSHEET_DOCUMENT, ORDER_NOTIFICATION_DOCUMENT, firstLetterId, now()
@@ -205,8 +199,17 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
             .containsExactly(documentSent(
                 MOTHER.getParty(), MOTHER_COVERSHEET_DOCUMENT, ORDER_NOTIFICATION_DOCUMENT, secondLetterId, now()
             ));
+    }
 
-        //TODO - check that email with A206 is sent to child representative
+    private void checkOrderNotificationLetterWasMailedToParents() {
+        checkUntil(() -> verify(sendLetterApi, times(2)).sendLetter(
+            eq(SERVICE_AUTH_TOKEN),
+            letterCaptor.capture()
+        ));
+        assertThat(letterCaptor.getAllValues()).usingRecursiveComparison().isEqualTo(List.of(
+            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, FATHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY),
+            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, MOTHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY)
+        ));
     }
 
     //TODO - test e-mail to respondents solicitors
