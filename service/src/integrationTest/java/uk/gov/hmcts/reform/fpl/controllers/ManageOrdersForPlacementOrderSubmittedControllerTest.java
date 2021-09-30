@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.fpl.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.codec.binary.Base64;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -16,6 +17,7 @@ import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.ChildParty;
 import uk.gov.hmcts.reform.fpl.model.Respondent;
 import uk.gov.hmcts.reform.fpl.model.RespondentParty;
+import uk.gov.hmcts.reform.fpl.model.RespondentSolicitor;
 import uk.gov.hmcts.reform.fpl.model.SentDocuments;
 import uk.gov.hmcts.reform.fpl.model.common.DocmosisDocument;
 import uk.gov.hmcts.reform.fpl.model.common.DocumentReference;
@@ -47,6 +49,7 @@ import static uk.gov.hmcts.reform.fpl.Constants.DEFAULT_ADMIN_EMAIL;
 import static uk.gov.hmcts.reform.fpl.Constants.DEFAULT_LA_COURT;
 import static uk.gov.hmcts.reform.fpl.Constants.LOCAL_AUTHORITY_1_CODE;
 import static uk.gov.hmcts.reform.fpl.Constants.LOCAL_AUTHORITY_1_INBOX;
+import static uk.gov.hmcts.reform.fpl.Constants.PRIVATE_SOLICITOR_USER_EMAIL;
 import static uk.gov.hmcts.reform.fpl.Constants.TEST_CASE_ID;
 import static uk.gov.hmcts.reform.fpl.Constants.TEST_FAMILY_MAN_NUMBER;
 import static uk.gov.hmcts.reform.fpl.NotifyTemplates.PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE;
@@ -55,6 +58,7 @@ import static uk.gov.hmcts.reform.fpl.model.order.Order.A70_PLACEMENT_ORDER;
 import static uk.gov.hmcts.reform.fpl.testingsupport.IntegrationTestConstants.CAFCASS_EMAIL;
 import static uk.gov.hmcts.reform.fpl.testingsupport.IntegrationTestConstants.COVERSHEET_PDF;
 import static uk.gov.hmcts.reform.fpl.utils.AssertionHelper.checkUntil;
+import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.element;
 import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.wrapElements;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.documentSent;
 import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.printRequest;
@@ -72,13 +76,10 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
     //TODO - copied from helper class
     private static final DocumentReference ORDER_DOCUMENT_REFERENCE = testDocumentReference();
     private static final byte[] ORDER_BINARY = testDocumentBinaries();
-    private static final String ENCODED_ORDER_DOCUMENT = new String(Base64.encodeBase64(ORDER_BINARY), ISO_8859_1);
 
     private static final DocumentReference ORDER_NOTIFICATION_DOCUMENT_REFERENCE = testDocumentReference();
     private static final Document ORDER_NOTIFICATION_DOCUMENT = testDocument();
     private static final byte[] ORDER_NOTIFICATION_BINARY = testDocumentBinaries();
-    private static final String ENCODED_ORDER_NOTIFICATION_DOCUMENT = new String(Base64.encodeBase64(ORDER_NOTIFICATION_BINARY), ISO_8859_1);
-
 
     private static final Respondent FATHER = Respondent.builder().party(RespondentParty.builder().firstName("Father").lastName("Jones").address(Address.builder().addressLine1("10 Father Road").postcode("SG5 7IR").build()).build()).build();//TODO - what if a parent has no address?
     private static final Document FATHER_COVERSHEET_DOCUMENT = testDocument();
@@ -89,13 +90,7 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
     private static final byte[] MOTHER_COVERSHEET_BINARY = testDocumentBinaries();//TODO - group and organise these fields
 
     //TODO - potentially reusable fields
-    private static final Map<String, Object> ORDER_EMAIL_PARAMETERS = Map.of(
-//        "callout", "^Theodore Bailey, " + TEST_FAMILY_MAN_NUMBER + ", hearing 1 Jan 2015",//TODO - check whether this is needed
-        "courtName", DEFAULT_LA_COURT,
-        "documentLink", Map.of("file", ENCODED_ORDER_DOCUMENT, "is_csv", false),
-        "caseUrl", "http://fake-url/cases/case-details/" + TEST_CASE_ID + "#Orders",
-        "childLastName", "Bailey"
-    );
+
     private static final String NOTIFICATION_REFERENCE = "localhost/" + TEST_CASE_ID;
 
     @MockBean
@@ -132,18 +127,25 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
     void setUp() {
         givenFplService();
 
+        Element<Child> child = element(Child.builder()
+            .party(ChildParty.builder().firstName("Theodore").lastName("Bailey").build())
+            .solicitor(RespondentSolicitor.builder().email(PRIVATE_SOLICITOR_USER_EMAIL).build())
+            .build());
         placementOrderCaseData = CaseData.builder()
             .id(TEST_CASE_ID)
             .familyManCaseNumber(TEST_FAMILY_MAN_NUMBER)
             .caseLocalAuthority(LOCAL_AUTHORITY_1_CODE)
             .respondents1(wrapElements(FATHER, MOTHER))//TODO - later on, let's add more respondents and choose them from Tomasz's event
-            .orderCollection(wrapElements(GeneratedOrder.builder()
-                .orderType(ORDER.name())
-                .type(ORDER.getTitle())
-                .document(ORDER_DOCUMENT_REFERENCE)
-                .notificationDocument(ORDER_NOTIFICATION_DOCUMENT_REFERENCE)
-                .children(wrapElements(Child.builder().party(ChildParty.builder().firstName("Theodore").lastName("Bailey").build()).build()))
-                .build()))
+            .children1(List.of(child))
+            .orderCollection(wrapElements(
+                GeneratedOrder.builder()
+                    .orderType(ORDER.name())
+                    .type(ORDER.getTitle())
+                    .document(ORDER_DOCUMENT_REFERENCE)
+                    .notificationDocument(ORDER_NOTIFICATION_DOCUMENT_REFERENCE)
+                    .children(List.of(child))
+                    .build()
+            ))
             .build();
     }
 
@@ -170,7 +172,6 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
         postSubmittedEvent(toCallBackRequest(placementOrderCaseData, CaseData.builder().build()));
 
         checkPlacementOrderWasDeliveredAsExpected();
-
         checkPlacementOrderNotificationWasDeliveredAsExpected(firstLetterId, secondLetterId);
     }
 
@@ -178,23 +179,30 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
         checkEmailWithOrderWasSent(LOCAL_AUTHORITY_1_INBOX);
         checkEmailWithOrderWasSent(DEFAULT_ADMIN_EMAIL);
         checkEmailWithOrderWasSent(CAFCASS_EMAIL);
-        verifyNoMoreInteractions(notificationClient);
     }
 
     private void checkEmailWithOrderWasSent(String recipient) {
+        checkEmailWasDelivered(recipient, ORDER_BINARY);
+    }
+
+    private void checkEmailWasDelivered(String recipient, byte[] attachedFile) {
         checkUntil(() -> verify(notificationClient).sendEmail(
             eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),
             eq(recipient),
-            eq(ORDER_EMAIL_PARAMETERS),
+            eq(getExpectedEmailParameters(attachedFile)),
             eq(NOTIFICATION_REFERENCE)
         ));
     }
 
     private void checkPlacementOrderNotificationWasDeliveredAsExpected(UUID firstLetterId, UUID secondLetterId) {
         checkOrderNotificationLetterWasMailedToParents();
-        checkCaseDataHasReferenceToLetters(firstLetterId, secondLetterId);
+        checkCaseDataHasReferenceToSentLetters(firstLetterId, secondLetterId);
 
-        //TODO - check that email with A206 is sent to child representative
+        checkEmailWithOrderNotificationWasSentToChildSolicitor();
+    }
+
+    private void checkEmailWithOrderNotificationWasSentToChildSolicitor() {
+        checkEmailWasDelivered(PRIVATE_SOLICITOR_USER_EMAIL, ORDER_NOTIFICATION_BINARY);
     }
 
     private void checkOrderNotificationLetterWasMailedToParents() {
@@ -206,10 +214,9 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
             printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, FATHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY),
             printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, MOTHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY)
         ));
-        verifyNoMoreInteractions(sendLetterApi);
     }
 
-    private void checkCaseDataHasReferenceToLetters(UUID firstLetterId, UUID secondLetterId) {
+    private void checkCaseDataHasReferenceToSentLetters(UUID firstLetterId, UUID secondLetterId) {
         checkUntil(() -> verify(coreCaseDataService).updateCase(eq(TEST_CASE_ID), caseDataDelta.capture()));
         List<Element<SentDocuments>> documentsSent = mapper.convertValue(
             caseDataDelta.getValue().get("documentsSentToParties"), new TypeReference<>() {
@@ -225,9 +232,25 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
             .containsExactly(documentSent(
                 MOTHER.getParty(), MOTHER_COVERSHEET_DOCUMENT, ORDER_NOTIFICATION_DOCUMENT, secondLetterId, now()
             ));
-        verifyNoMoreInteractions(coreCaseDataService);
     }
 
     //TODO - test e-mail to respondents solicitors
+
+    private Map<String, Object> getExpectedEmailParameters(byte[] fileBytes) {
+        final String encodedOrderDocument = new String(Base64.encodeBase64(fileBytes), ISO_8859_1);
+
+        return Map.of(
+            //        "callout", "^Theodore Bailey, " + TEST_FAMILY_MAN_NUMBER + ", hearing 1 Jan 2015",//TODO - check whether this is needed
+            "courtName", DEFAULT_LA_COURT,
+            "documentLink", Map.of("file", encodedOrderDocument, "is_csv", false),
+            "caseUrl", "http://fake-url/cases/case-details/" + TEST_CASE_ID + "#Orders",
+            "childLastName", "Bailey"
+        );
+    }
+
+    @AfterEach
+    void tearDown() {
+        verifyNoMoreInteractions(notificationClient, coreCaseDataService, sendLetterApi);
+    }
 
 }

@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.fpl.config.CafcassLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.events.order.GeneratedPlacementOrderEvent;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.Recipient;
 import uk.gov.hmcts.reform.fpl.model.Respondent;
-import uk.gov.hmcts.reform.fpl.model.common.DocumentReference;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
 import uk.gov.hmcts.reform.fpl.model.notify.NotifyData;
 import uk.gov.hmcts.reform.fpl.model.notify.RecipientsRequest;
@@ -21,12 +21,14 @@ import uk.gov.hmcts.reform.fpl.service.email.NotificationService;
 import uk.gov.hmcts.reform.fpl.service.email.content.OrderIssuedEmailContentProvider;
 import uk.gov.hmcts.reform.fpl.service.orders.history.SealedOrderHistoryService;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.fpl.NotifyTemplates.PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE;
+import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.findElement;
 
 @Slf4j
 @Component
@@ -44,19 +46,19 @@ public class GeneratedPlacementOrderEventHandler {//TODO - maybe this should ext
     @EventListener
     public void sendPlacementOrderEmail(final GeneratedPlacementOrderEvent orderEvent) {
         final CaseData caseData = orderEvent.getCaseData();
-        final DocumentReference orderDocument = orderEvent.getOrderDocument();
         GeneratedOrder lastGeneratedOrder = sealedOrderHistoryService.lastGeneratedOrder(caseData);
 
         final NotifyData notifyData = orderIssuedEmailContentProvider.getNotifyDataForPlacementOrder(caseData,
-            orderDocument, lastGeneratedOrder.getChildren().get(0).getValue());
+            orderEvent.getOrderDocument(), lastGeneratedOrder.getChildren().get(0).getValue());
 
-        sendEmail(caseData, notifyData);
+        sendOrderByEmail(caseData, notifyData);
     }
 
     @EventListener
     public void sendPlacementOrderNotification(final GeneratedPlacementOrderEvent orderEvent) {
-        CaseData caseData = orderEvent.getCaseData();
+         CaseData caseData = orderEvent.getCaseData();
 
+        //Post letters
         //TODO - this is wrong and will be addressed later
         List<Recipient> recipients = caseData.getAllRespondents().stream()
             .map(Element::getValue)
@@ -64,12 +66,23 @@ public class GeneratedPlacementOrderEventHandler {//TODO - maybe this should ext
             .collect(Collectors.toList());
 
         sendDocumentService.sendDocuments(caseData, List.of(orderEvent.getOrderNotificationDocument()), recipients);
+
+        //E-mail child solicitor
+        GeneratedOrder lastGeneratedOrder = sealedOrderHistoryService.lastGeneratedOrder(caseData);//TODO - some duplication with first method
+        UUID childId = lastGeneratedOrder.getChildren().get(0).getId();
+        Child child = findElement(childId, caseData.getAllChildren()).map(Element::getValue).orElseThrow();
+
+        final NotifyData notifyData = orderIssuedEmailContentProvider.getNotifyDataForPlacementOrder(caseData,
+            orderEvent.getOrderNotificationDocument(),
+            child);
+
+        sendEmail(caseData, notifyData, Set.of(child.getSolicitor().getEmail()));
     }
 
-    private void sendEmail(final CaseData caseData,
-                           final NotifyData notifyData) {
+    private void sendOrderByEmail(final CaseData caseData,
+                                  final NotifyData notifyData) {
 
-        Collection<String> recipients = new HashSet<>();
+        Set<String> recipients = new HashSet<>();
 
         //Local authority
         recipients.addAll(
@@ -82,10 +95,14 @@ public class GeneratedPlacementOrderEventHandler {//TODO - maybe this should ext
         //CAFCASS
         recipients.add(cafcassLookupConfiguration.getCafcass(caseData.getCaseLocalAuthority()).getEmail());
 
+        sendEmail(caseData, notifyData, recipients);
+    }
+
+    private void sendEmail(CaseData caseData, NotifyData notifyData, Set<String> recipients) {
         notificationService.sendEmail(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE,
             recipients,
             notifyData,
-            caseData.getId());
+            caseData.getId());//TODO param
     }
 
 }

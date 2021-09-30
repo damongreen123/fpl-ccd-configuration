@@ -83,7 +83,7 @@ public class OrderIssuedEmailContentProvider extends AbstractEmailContentProvide
             .build();
     }
 
-    public PlacementOrderIssuedNotifyData getNotifyDataForPlacementOrder(CaseData caseData, DocumentReference orderDocument, Child child) {
+    public PlacementOrderIssuedNotifyData getNotifyDataForPlacementOrder(CaseData caseData, DocumentReference documentToSend, Child child) {
         ChildParty childPartyInfo = child.getParty();
 
         return PlacementOrderIssuedNotifyData.builder()
@@ -91,8 +91,8 @@ public class OrderIssuedEmailContentProvider extends AbstractEmailContentProvide
 //                caseData.getFamilyManCaseNumber(), child, hearing))
             .caseUrl(getCaseUrl(caseData.getId(), ORDERS))
             .courtName(courtService.getCourtName(caseData))
-            .documentLink(linkToAttachedDocument(orderDocument))
-            .childLastName(childPartyInfo.getLastName())
+            .documentLink(linkToAttachedDocument(documentToSend))
+            .childLastName(childPartyInfo.getLastName())//TODO - param?
             .build();
     }
 
