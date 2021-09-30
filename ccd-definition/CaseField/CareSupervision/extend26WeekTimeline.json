@@ -145,8 +145,27 @@
     "ID": "childTimelineSelector",
     "CaseTypeID": "CARE_SUPERVISION_EPO",
     "Label": "Select whose timeline is being selected",
-    "FieldType": "ChildSelector",
-    "SecurityClassification": "PUBLIC",
+    "FieldType": "ChildExtension",
+    "SecurityClassification": "Public",
+    "Searchable": "N"
+  },
+  {
+    "LiveFrom": "01/01/2017",
+    "CaseTypeID": "CARE_SUPERVISION_EPO",
+    "ID": "isTimelineExtendingSameForAllChildren",
+    "Label": "Add extension length and reason",
+    "HintText": "Are all the selected children's timelines being extended by the same amount of time, and for the same reason?",
+    "FieldType": "YesOrNo",
+    "SecurityClassification": "Public",
+    "Searchable": "N"
+  },
+  {
+    "LiveFrom": "01/01/2017",
+    "ID": "childTimelineExtension",
+    "CaseTypeID": "CARE_SUPERVISION_EPO",
+    "Label": " ",
+    "FieldType": "ChildExtension",
+    "SecurityClassification": "Public",
     "Searchable": "N"
   }
 ]

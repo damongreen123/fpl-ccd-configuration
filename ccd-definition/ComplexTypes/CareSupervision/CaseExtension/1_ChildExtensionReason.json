@@ -1,0 +1,21 @@
+[
+  {
+    "LiveFrom": "01/01/2017",
+    "ID": "ChildExtensionReason",
+    "ListElementCode": "timeExtension",
+    "FieldType": "FixedRadioList",
+    "FieldTypeParameter": "ChildTimeExtension",
+    "ElementLabel": "Time extension",
+    "SecurityClassification": "Public"
+  },
+  {
+    "LiveFrom": "01/01/2017",
+    "ID": "ChildExtensionReason",
+    "ListElementCode": "newEndDate",
+    "FieldType": "Date",
+    "ElementLabel": "New end date",
+    "HintText": "For example 31 8 2023",
+    "SecurityClassification": "Public",
+    "FieldShowCondition": "timeExtension=\"DIFFERENT_DATE\""
+  }
+]
