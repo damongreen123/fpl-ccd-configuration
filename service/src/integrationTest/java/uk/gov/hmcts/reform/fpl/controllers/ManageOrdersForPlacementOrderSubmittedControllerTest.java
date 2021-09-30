@@ -169,18 +169,44 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
 
         postSubmittedEvent(toCallBackRequest(placementOrderCaseData, CaseData.builder().build()));
 
-        //A70
+        checkPlacementOrderWasDeliveredAsExpected();
+
+        checkPlacementOrderNotificationWasDeliveredAsExpected(firstLetterId, secondLetterId);
+    }
+
+    private void checkPlacementOrderWasDeliveredAsExpected() {
         checkEmailWithOrderWasSent(LOCAL_AUTHORITY_1_INBOX);
         checkEmailWithOrderWasSent(DEFAULT_ADMIN_EMAIL);
         checkEmailWithOrderWasSent(CAFCASS_EMAIL);
         verifyNoMoreInteractions(notificationClient);
+    }
 
-        //A206
-        //Check document mailed to parents
+    private void checkEmailWithOrderWasSent(String recipient) {
+        checkUntil(() -> verify(notificationClient).sendEmail(
+            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),
+            eq(recipient),
+            eq(ORDER_EMAIL_PARAMETERS),
+            eq(NOTIFICATION_REFERENCE)
+        ));
+    }
+
+    private void checkPlacementOrderNotificationWasDeliveredAsExpected(UUID firstLetterId, UUID secondLetterId) {
         checkOrderNotificationLetterWasMailedToParents();
         checkCaseDataHasReferenceToLetters(firstLetterId, secondLetterId);
 
         //TODO - check that email with A206 is sent to child representative
+    }
+
+    private void checkOrderNotificationLetterWasMailedToParents() {
+        checkUntil(() -> verify(sendLetterApi, times(2)).sendLetter(
+            eq(SERVICE_AUTH_TOKEN),
+            letterCaptor.capture()
+        ));
+        assertThat(letterCaptor.getAllValues()).usingRecursiveComparison().isEqualTo(List.of(
+            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, FATHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY),
+            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, MOTHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY)
+        ));
+        verifyNoMoreInteractions(sendLetterApi);
     }
 
     private void checkCaseDataHasReferenceToLetters(UUID firstLetterId, UUID secondLetterId) {
@@ -199,28 +225,9 @@ class ManageOrdersForPlacementOrderSubmittedControllerTest extends AbstractCallb
             .containsExactly(documentSent(
                 MOTHER.getParty(), MOTHER_COVERSHEET_DOCUMENT, ORDER_NOTIFICATION_DOCUMENT, secondLetterId, now()
             ));
-    }
-
-    private void checkOrderNotificationLetterWasMailedToParents() {
-        checkUntil(() -> verify(sendLetterApi, times(2)).sendLetter(
-            eq(SERVICE_AUTH_TOKEN),
-            letterCaptor.capture()
-        ));
-        assertThat(letterCaptor.getAllValues()).usingRecursiveComparison().isEqualTo(List.of(
-            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, FATHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY),
-            printRequest(TEST_CASE_ID, ORDER_NOTIFICATION_DOCUMENT_REFERENCE, MOTHER_COVERSHEET_BINARY, ORDER_NOTIFICATION_BINARY)
-        ));
+        verifyNoMoreInteractions(coreCaseDataService);
     }
 
     //TODO - test e-mail to respondents solicitors
-
-    private void checkEmailWithOrderWasSent(String recipient) {
-        checkUntil(() -> verify(notificationClient).sendEmail(
-            eq(PLACEMENT_ORDER_GENERATED_NOTIFICATION_TEMPLATE),
-            eq(recipient),
-            eq(ORDER_EMAIL_PARAMETERS),
-            eq(NOTIFICATION_REFERENCE)
-        ));
-    }
 
 }
