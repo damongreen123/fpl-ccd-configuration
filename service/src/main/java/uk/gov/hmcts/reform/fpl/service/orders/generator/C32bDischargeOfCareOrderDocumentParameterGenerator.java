@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.fpl.config.LocalAuthorityNameLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.enums.DocmosisTemplates;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.HearingVenue;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.HearingVenueLookUpService;
@@ -45,7 +46,7 @@ public class C32bDischargeOfCareOrderDocumentParameterGenerator implements Docmo
 
         return C32bDischargeOfCareOrderDocmosisParameters.builder()
             .orderTitle(Order.C32B_DISCHARGE_OF_CARE_ORDER.getTitle())
-            .orderDetails(orderDetails(eventData, hearingVenue))
+            .orderDetails(orderDetails(eventData, hearingVenue, caseData.getImageLanguage()))
             .furtherDirections(eventData.getManageOrdersFurtherDirections())
             .localAuthorityName(localAuthorityName)
             .build();
@@ -53,13 +54,14 @@ public class C32bDischargeOfCareOrderDocumentParameterGenerator implements Docmo
 
     @Override
     public DocmosisTemplates template() {
-        return DocmosisTemplates.ORDER_V2;
+        return DocmosisTemplates.C32B;
     }
 
-    private String orderDetails(ManageOrdersEventData eventData, HearingVenue hearingVenue) {
+    private String orderDetails(ManageOrdersEventData eventData, HearingVenue hearingVenue, Language language) {
 
-        String dischargeMessage = "The Court discharges the care order made by %s "
-            + "made on %s.";
+        String dischargeMessage = (language == Language.WELSH) ? "Mae’r Llys yn diddymu’r gorchymyn gofal a " +
+            "wnaethpwyd gan %s ar %s."
+            : "The Court discharges the care order made by %s made on %s.";
 
         String issuedCourt = hearingVenue.getVenue();
         String issuedDate = getIssuedDate(eventData);
