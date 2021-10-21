@@ -78,6 +78,7 @@ import static uk.gov.hmcts.reform.fpl.utils.Constants.NEW_LINE;
 import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.DATE;
 import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.formatLocalDateToString;
 import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.unwrapElements;
+import static uk.gov.hmcts.reform.fpl.utils.GenderDisplayFormatHelper.formatGenderDisplay;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
@@ -577,20 +578,6 @@ public class CaseSubmissionGenerationService
             .build();
     }
 
-    private String formatGenderDisplay(final String gender, final String genderIdentification) {
-        if (StringUtils.isNotEmpty(gender)) {
-            if ("They identify in another way".equalsIgnoreCase(gender)
-                && StringUtils.isNotEmpty(genderIdentification)) {
-                return genderIdentification;
-            }
-            if ("Maent yn uniaethu mewn ffordd arall".equalsIgnoreCase(gender)
-                && StringUtils.isNotEmpty(genderIdentification)) {
-                return genderIdentification;
-            }
-            return gender;
-        }
-        return DEFAULT_STRING;
-    }
 
     private String getEmail(final EmailAddress email) {
         return email != null && StringUtils.isNotEmpty(email.getEmail()) ? email.getEmail() : DEFAULT_STRING;
