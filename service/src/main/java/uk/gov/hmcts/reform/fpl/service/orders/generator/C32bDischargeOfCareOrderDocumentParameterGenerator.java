@@ -13,13 +13,9 @@ import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.HearingVenueLookUpService;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.C32bDischargeOfCareOrderDocmosisParameters;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.DocmosisParameters;
+import uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
-import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.DATE_WITH_ORDINAL_SUFFIX;
-import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.formatLocalDateTimeBaseUsingFormat;
-import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.getDayOfMonthSuffix;
+import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.DATE;
 
 @Component
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -64,17 +60,12 @@ public class C32bDischargeOfCareOrderDocumentParameterGenerator implements Docmo
             : "The Court discharges the care order made by %s made on %s.";
 
         String issuedCourt = hearingVenue.getVenue();
-        String issuedDate = getIssuedDate(eventData);
+        String issuedDate = getIssuedDate(eventData, language);
 
         return String.format(dischargeMessage, issuedCourt, issuedDate);
     }
 
-    public String getIssuedDate(ManageOrdersEventData eventData) {
-        LocalDateTime issuedDate = LocalDateTime.of(eventData.getManageOrdersCareOrderIssuedDate(), LocalTime.MIDNIGHT);
-
-        String ordinalSuffix = getDayOfMonthSuffix(issuedDate.getDayOfMonth());
-        String formatString = formatLocalDateTimeBaseUsingFormat(issuedDate, DATE_WITH_ORDINAL_SUFFIX);
-
-        return String.format(formatString, ordinalSuffix);
+    public String getIssuedDate(ManageOrdersEventData eventData, Language language) {
+        return DateFormatterHelper.formatLocalDateToString(eventData.getManageOrdersCareOrderIssuedDate(), DATE, language);
     }
 }
