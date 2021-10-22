@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.fpl.enums.OrderStatus;
 import uk.gov.hmcts.reform.fpl.enums.docmosis.RenderFormat;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.common.DocmosisDocument;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.document.DocumentGenerator;
 
@@ -18,7 +19,7 @@ public class OrderDocumentGenerator {
     private final DocumentMerger documentMerger;
     private final DocumentGenerator documentGenerator;
 
-    public DocmosisDocument generate(Order orderType, CaseData caseData, OrderStatus orderStatus, RenderFormat format) {
+    public DocmosisDocument generate(Order orderType, CaseData caseData, OrderStatus orderStatus, RenderFormat format, Language language) {
         DocmosisParameterGenerator docmosisParameterGenerator = holder.getTypeToGenerator().get(orderType);
 
         if (docmosisParameterGenerator == null) {
@@ -28,7 +29,7 @@ public class OrderDocumentGenerator {
         DocmosisDocument docmosisDocument = documentGenerator.generateDocument(caseData,
             docmosisParameterGenerator,
             format,
-            orderStatus, caseData.getImageLanguage());
+            orderStatus, language);
 
         AdditionalDocumentsCollector documentsHolder = holder.getTypeToAdditionalDocumentsCollector().get(orderType);
         if (documentsHolder != null && OrderStatus.SEALED == orderStatus) {

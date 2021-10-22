@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.fpl.model.Other;
 import uk.gov.hmcts.reform.fpl.model.common.DocumentReference;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
 import uk.gov.hmcts.reform.fpl.model.common.dynamic.DynamicList;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.generated.GeneratedOrder;
 import uk.gov.hmcts.reform.fpl.selectors.ChildrenSmartSelector;
@@ -65,8 +66,12 @@ public class SealedOrderHistoryService {
         List<Element<Child>> selectedChildren = childrenSmartSelector.getSelectedChildren(caseData);
         List<Element<Other>> selectedOthers = othersService.getSelectedOthers(caseData);
 
-        DocumentReference sealedPdfOrder = orderCreationService.createOrderDocument(caseData, OrderStatus.SEALED, PDF);
-        DocumentReference plainWordOrder = orderCreationService.createOrderDocument(caseData, OrderStatus.PLAIN, WORD);
+        DocumentReference sealedPdfOrder = orderCreationService.createOrderDocument(caseData, OrderStatus.SEALED, PDF, Language.ENGLISH);
+        // TODO check this - probably better to have an Optional somewhere
+        DocumentReference sealedPdfOrderTranslated = (caseData.getImageLanguage() == Language.WELSH) ?
+            orderCreationService.createOrderDocument(caseData, OrderStatus.SEALED, PDF, Language.WELSH)
+            : null;
+        DocumentReference plainWordOrder = orderCreationService.createOrderDocument(caseData, OrderStatus.PLAIN, WORD, Language.ENGLISH);
 
         GeneratedOrder.GeneratedOrderBuilder generatedOrderBuilder = GeneratedOrder.builder()
             .orderType(manageOrdersEventData.getManageOrdersType().name()) // hidden field, to store the type
@@ -83,6 +88,7 @@ public class SealedOrderHistoryService {
             .specialGuardians(appointedGuardianFormatter.getGuardiansNamesForTab(caseData))
             .othersNotified(othersNotifiedGenerator.getOthersNotified(selectedOthers))
             .document(sealedPdfOrder)
+            .translatedDocument(sealedPdfOrderTranslated)
             .translationRequirements(languageRequirementGenerator.translationRequirements(caseData))
             .unsealedDocumentCopy(plainWordOrder);
 
