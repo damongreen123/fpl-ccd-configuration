@@ -28,7 +28,7 @@ public class OrderDocumentGenerator {
         DocmosisDocument docmosisDocument = documentGenerator.generateDocument(caseData,
             docmosisParameterGenerator,
             format,
-            orderStatus);
+            orderStatus, caseData.getImageLanguage());
 
         AdditionalDocumentsCollector documentsHolder = holder.getTypeToAdditionalDocumentsCollector().get(orderType);
         if (documentsHolder != null && OrderStatus.SEALED == orderStatus) {

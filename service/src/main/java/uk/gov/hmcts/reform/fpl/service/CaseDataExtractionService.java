@@ -5,6 +5,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.fpl.enums.ChildGender;
 import uk.gov.hmcts.reform.fpl.enums.hearing.HearingAttendance;
 import uk.gov.hmcts.reform.fpl.model.ApplicantParty;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
@@ -20,6 +21,7 @@ import uk.gov.hmcts.reform.fpl.model.common.Element;
 import uk.gov.hmcts.reform.fpl.model.common.JudgeAndLegalAdvisor;
 import uk.gov.hmcts.reform.fpl.model.configuration.DirectionConfiguration;
 import uk.gov.hmcts.reform.fpl.model.configuration.Display;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisChild;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisDirection;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisHearingBooking;
@@ -33,7 +35,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static java.time.format.FormatStyle.LONG;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
@@ -41,10 +42,12 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.trim;
 import static uk.gov.hmcts.reform.fpl.model.configuration.Display.Due.BY;
 import static uk.gov.hmcts.reform.fpl.service.HearingVenueLookUpService.HEARING_VENUE_ID_OTHER;
+import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.DATE;
 import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.DATE_TIME;
 import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.TIME_DATE;
 import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.formatLocalDateTimeBaseUsingFormat;
 import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.formatLocalDateToString;
+import static uk.gov.hmcts.reform.fpl.utils.GenderDisplayFormatHelper.formatGenderDisplay;
 import static uk.gov.hmcts.reform.fpl.utils.JudgeAndLegalAdvisorHelper.formatJudgeTitleAndName;
 import static uk.gov.hmcts.reform.fpl.utils.JudgeAndLegalAdvisorHelper.getLegalAdvisorName;
 
@@ -58,7 +61,13 @@ public class CaseDataExtractionService {
     private final CourtService courtService;
 
     public String getCourtName(CaseData caseData) {
-        return courtService.getCourtName(caseData);
+        String courtName = courtService.getCourtName(caseData);
+        return caseData.getImageLanguage() == Language.WELSH ? convertCourtNameToWelsh(courtName) : courtName;
+    }
+
+    // TODO - figure out a nicer way of fixing the family court name including English
+    public String convertCourtNameToWelsh(String courtName) {
+        return courtName.replace("Family Court sitting at", "Y Llys Teulu yn eistedd yn");
     }
 
     public String getHearingTime(HearingBooking hearingBooking) {
@@ -89,12 +98,17 @@ public class CaseDataExtractionService {
         return Optional.ofNullable(hearingDate);
     }
 
-    public List<DocmosisChild> getChildrenDetails(List<Element<Child>> children) {
+    public List<DocmosisChild> getChildrenDetails(List<Element<Child>> children, Language language) {
         return children.stream()
             .map(element -> element.getValue().getParty())
-            .map(this::buildChild)
+            .map(child -> buildChild(child, language))
             .distinct()
             .collect(toList());
+    }
+
+    // So untranslated order generators don't need updating yet
+    public List<DocmosisChild> getChildrenDetails(List<Element<Child>> children) {
+        return getChildrenDetails(children, Language.ENGLISH);
     }
 
     public String getApplicantName(CaseData caseData) {
@@ -237,12 +251,12 @@ public class CaseDataExtractionService {
             .build();
     }
 
-    private DocmosisChild buildChild(ChildParty child) {
+    private DocmosisChild buildChild(ChildParty child, Language language) {
         return DocmosisChild.builder()
             .name(child.getFullName())
-            .gender(child.getGender())
+            .gender(formatGenderDisplay(ChildGender.fromLabel(child.getGender()).getLabel(language), child.getGenderIdentification()))
             .dateOfBirth(ofNullable(child.getDateOfBirth())
-                .map(dob -> formatLocalDateToString(child.getDateOfBirth(), LONG))
+                .map(dob -> formatLocalDateToString(child.getDateOfBirth(), DATE, language))
                 .orElse(null))
             .build();
     }

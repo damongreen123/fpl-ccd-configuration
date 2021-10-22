@@ -40,7 +40,7 @@ public class DocmosisCommonElementDecorator {
         ManageOrdersEventData eventData = caseData.getManageOrdersEventData();
 
         List<Element<Child>> selectedChildren = childrenSmartSelector.getSelectedChildren(caseData);
-        List<DocmosisChild> children = extractionService.getChildrenDetails(selectedChildren);
+        List<DocmosisChild> children = extractionService.getChildrenDetails(selectedChildren, caseData.getImageLanguage());
 
         JudgeAndLegalAdvisor judgeAndLegalAdvisor = getSelectedJudge(
             caseData.getJudgeAndLegalAdvisor(), caseData.getAllocatedJudge()

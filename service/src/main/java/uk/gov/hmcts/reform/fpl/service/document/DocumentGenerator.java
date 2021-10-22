@@ -29,15 +29,23 @@ public class DocumentGenerator {
     public DocmosisDocument generateDocument(CaseData caseData,
                                              DocmosisParameterGenerator docmosisParameterGenerator,
                                              RenderFormat format,
-                                             OrderStatus orderStatus) {
+                                             OrderStatus orderStatus,
+                                             Language language) {
         DocmosisParameters customParameters = docmosisParameterGenerator.generate(caseData);
         DocmosisParameters docmosisParameters =
             decorator.decorate(customParameters, caseData, orderStatus, docmosisParameterGenerator.accept());
         Map<String, Object> templateData = caseConverter.toMap(docmosisParameters);
 
         return docmosisDocumentGeneratorService.generateDocmosisDocument(
-            templateData, docmosisParameterGenerator.template(), format, Language.ENGLISH
+            templateData, docmosisParameterGenerator.template(), format, language
         );
+    }
+
+    public DocmosisDocument generateDocument(CaseData caseData,
+                                             DocmosisParameterGenerator docmosisParameterGenerator,
+                                             RenderFormat format,
+                                             OrderStatus orderStatus) {
+        return generateDocument(caseData, docmosisParameterGenerator, format, orderStatus, Language.ENGLISH);
     }
 
     public DocmosisDocument generateDocument(CaseData caseData, DocmosisParameterGenerator parameterGenerator) {
