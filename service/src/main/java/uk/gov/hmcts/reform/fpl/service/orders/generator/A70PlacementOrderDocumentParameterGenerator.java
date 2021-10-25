@@ -8,6 +8,7 @@ import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.ChildParty;
 import uk.gov.hmcts.reform.fpl.model.LocalAuthority;
 import uk.gov.hmcts.reform.fpl.model.Placement;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisBirthCertificate;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisChild;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
@@ -36,7 +37,7 @@ public class A70PlacementOrderDocumentParameterGenerator implements DocmosisPara
     }
 
     @Override
-    public A70PlacementOrderDocmosisParameters generate(CaseData caseData) {
+    public A70PlacementOrderDocmosisParameters generate(CaseData caseData, Language language) {
         LocalAuthority designatedLocalAuthority = caseData.getDesignatedLocalAuthority();
 
         ManageOrdersEventData manageOrdersEventData = caseData.getManageOrdersEventData();

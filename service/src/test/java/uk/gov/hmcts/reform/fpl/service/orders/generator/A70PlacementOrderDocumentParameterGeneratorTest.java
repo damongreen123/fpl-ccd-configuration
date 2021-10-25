@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.fpl.model.ChildParty;
 import uk.gov.hmcts.reform.fpl.model.LocalAuthority;
 import uk.gov.hmcts.reform.fpl.model.Placement;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisChild;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.service.PlacementService;
@@ -36,6 +37,7 @@ import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.testChild;
 class A70PlacementOrderDocumentParameterGeneratorTest {
 
     private static final String UNKNOWN = "unknown";
+    public static final Language LANGUAGE = Language.ENGLISH;
 
     @Mock
     private PlacementService placementService;
@@ -90,7 +92,7 @@ class A70PlacementOrderDocumentParameterGeneratorTest {
             .thenReturn(placementElement.getValue());
         when(placementService.getChildByPlacementId(caseData, placementElement.getId())).thenReturn(placementChild);
 
-        A70PlacementOrderDocmosisParameters docmosisParameters = parameterGenerator.generate(caseData);
+        A70PlacementOrderDocmosisParameters docmosisParameters = parameterGenerator.generate(caseData, LANGUAGE);
 
         assertThat(docmosisParameters.getOrderTitle()).isEqualTo("Placement Order");
         assertThat(docmosisParameters.getChildrenAct()).isEqualTo("Section 21 of the Adoption and Children Act 2002");
@@ -139,7 +141,7 @@ class A70PlacementOrderDocumentParameterGeneratorTest {
             .thenReturn(placementElement.getValue());
         when(placementService.getChildByPlacementId(caseData, placementElement.getId())).thenReturn(placementChild);
 
-        A70PlacementOrderDocmosisParameters docmosisParameters = parameterGenerator.generate(caseData);
+        A70PlacementOrderDocmosisParameters docmosisParameters = parameterGenerator.generate(caseData, LANGUAGE);
 
         assertThat(docmosisParameters.getChild().getName()).isEqualTo(UNKNOWN);
         assertThat(docmosisParameters.getChild().getFathersName()).isEqualTo(UNKNOWN);

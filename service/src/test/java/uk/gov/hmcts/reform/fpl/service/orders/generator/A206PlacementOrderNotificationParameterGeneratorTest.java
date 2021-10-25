@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.ChildParty;
 import uk.gov.hmcts.reform.fpl.model.Placement;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.service.PlacementService;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.A206PlacementOrderNotificationDocmosisParameters;
@@ -27,6 +28,7 @@ import static uk.gov.hmcts.reform.fpl.utils.TestDataHelper.buildDynamicList;
 @ExtendWith(MockitoExtension.class)
 class A206PlacementOrderNotificationParameterGeneratorTest {
 
+    public static final Language LANGUAGE = Language.ENGLISH;
     @Mock
     private PlacementService placementService;
 
@@ -60,7 +62,7 @@ class A206PlacementOrderNotificationParameterGeneratorTest {
             .build();
         when(placementService.getChildByPlacementId(caseData, placement.getId())).thenReturn(selectedPlacementChild);
 
-        A206PlacementOrderNotificationDocmosisParameters docmosisParameters = underTest.generate(caseData);
+        A206PlacementOrderNotificationDocmosisParameters docmosisParameters = underTest.generate(caseData, LANGUAGE);
 
         assertThat(docmosisParameters.getSerialNumber()).isEqualTo("123");
         assertThat(docmosisParameters.getChildrenAct()).isEqualTo("Adoption and Children Act 2002");

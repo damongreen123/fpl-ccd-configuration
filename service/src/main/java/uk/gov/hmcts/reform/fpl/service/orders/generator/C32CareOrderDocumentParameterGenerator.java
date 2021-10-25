@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.fpl.enums.GeneratedOrderType;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.selectors.ChildrenSmartSelector;
@@ -37,7 +38,7 @@ public class C32CareOrderDocumentParameterGenerator implements DocmosisParameter
     }
 
     @Override
-    public DocmosisParameters generate(CaseData caseData) {
+    public DocmosisParameters generate(CaseData caseData, Language language) {
         ManageOrdersEventData eventData = caseData.getManageOrdersEventData();
 
         String localAuthorityCode = caseData.getCaseLocalAuthority();

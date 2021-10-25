@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.model.order.selector.Selector;
@@ -53,6 +54,7 @@ class C43aSpecialGuardianshipOrderDocumentParameterGeneratorTest {
     private static final String NOTICE_MESSAGE = "Any person with parental responsibility for a child may "
         + "obtain advice on what can be done to prevent the issue of a passport to the child. They should write "
         + "to The United Kingdom Passport Agency, Globe House, 89 Eccleston Square, LONDON, SW1V 1PN.";
+    private static final Language LANGUAGE = Language.ENGLISH;
 
     @Mock
     private ChildrenService childrenService;
@@ -86,7 +88,7 @@ class C43aSpecialGuardianshipOrderDocumentParameterGeneratorTest {
         when(appointedGuardianFormatter.getGuardiansNamesForDocument(caseData)).thenReturn("Remmy Respondent is");
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(CONSENT);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(getOrderAppointmentMessageForChildWithSinglePersonResponsible())
             .build();
@@ -103,7 +105,7 @@ class C43aSpecialGuardianshipOrderDocumentParameterGeneratorTest {
         when(childrenService.getSelectedChildren(caseData)).thenReturn(selectedChildren);
         when(appointedGuardianFormatter.getGuardiansNamesForDocument(caseData)).thenReturn("Remmy Respondent is");
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(CONSENT);
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(getOrderAppointmentMessageForChildWithSinglePersonResponsible())
             .build();
@@ -121,7 +123,7 @@ class C43aSpecialGuardianshipOrderDocumentParameterGeneratorTest {
         when(appointedGuardianFormatter.getGuardiansNamesForDocument(caseData)).thenReturn("Remmy Respondent is");
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(null);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(false)
             .orderDetails(getOrderAppointmentMessageForChildWithSinglePersonResponsible())
             .build();
@@ -139,7 +141,7 @@ class C43aSpecialGuardianshipOrderDocumentParameterGeneratorTest {
         when(appointedGuardianFormatter.getGuardiansNamesForDocument(caseData)).thenReturn("Remmy Respondent is");
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(CONSENT);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(getOrderAppointmentMessageForChildrenWithSinglePersonResponsible())
             .build();
@@ -157,7 +159,7 @@ class C43aSpecialGuardianshipOrderDocumentParameterGeneratorTest {
         when(appointedGuardianFormatter.getGuardiansNamesForDocument(caseData)).thenReturn("Remmy Respondent is");
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(null);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(false)
             .orderDetails(getOrderAppointmentMessageForChildrenWithSinglePersonResponsible())
             .build();
@@ -176,7 +178,7 @@ class C43aSpecialGuardianshipOrderDocumentParameterGeneratorTest {
             .thenReturn("Remmy Respondent, Randle Responde are");
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(CONSENT);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(getOrderAppointmentMessageForChildWithMultiplePeopleResponsible())
             .build();
@@ -195,7 +197,7 @@ class C43aSpecialGuardianshipOrderDocumentParameterGeneratorTest {
             .thenReturn("Remmy Respondent, Randle Responde are");
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(CONSENT);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(getOrderAppointmentMessageForChildrenWithMultiplePeopleResponsible())
             .build();
@@ -214,7 +216,7 @@ class C43aSpecialGuardianshipOrderDocumentParameterGeneratorTest {
             .thenReturn("P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17 are");
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(CONSENT);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(getMaxSpecialGuardiansAllowed())
             .build();

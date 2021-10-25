@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.fpl.enums.EnglandOffices;
 import uk.gov.hmcts.reform.fpl.enums.WalesOffices;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.C47ADocmosisParameters;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.DocmosisParameters;
@@ -19,6 +20,7 @@ import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.wrapElements;
 @ExtendWith({MockitoExtension.class})
 class C47AAppointmentOfAChildrensGuardianParameterGeneratorTest {
     private static final String FURTHER_DIRECTIONS = "further directions";
+    private static final Language LANGUAGE = Language.ENGLISH;
     private static final String CHILD = "child";
     private static final String CHILDREN = "children";
 
@@ -48,7 +50,7 @@ class C47AAppointmentOfAChildrensGuardianParameterGeneratorTest {
             .children1(wrapElements(Child.builder().build()))
             .build();
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(buildOrderDetailsLabel(office.getLabel(), CHILD))
             .build();
@@ -69,7 +71,7 @@ class C47AAppointmentOfAChildrensGuardianParameterGeneratorTest {
             .children1(wrapElements(Child.builder().build()))
             .build();
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(buildOrderDetailsLabel(office.getLabel(), CHILD))
             .build();
@@ -90,7 +92,7 @@ class C47AAppointmentOfAChildrensGuardianParameterGeneratorTest {
             .children1(wrapElements(Child.builder().build(), Child.builder().build()))
             .build();
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(buildOrderDetailsLabel(office.getLabel(), CHILDREN))
             .build();

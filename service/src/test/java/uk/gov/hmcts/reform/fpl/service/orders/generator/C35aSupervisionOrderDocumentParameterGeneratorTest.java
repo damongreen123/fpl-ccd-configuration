@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.fpl.enums.DocmosisTemplates;
 import uk.gov.hmcts.reform.fpl.enums.GeneratedOrderType;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.ManageOrderDocumentService;
@@ -85,7 +86,7 @@ class C35aSupervisionOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, Language.ENGLISH);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(courtOrderMessage)
             .build();
@@ -106,7 +107,7 @@ class C35aSupervisionOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILDREN_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, Language.ENGLISH);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(courtOrderMessage)
             .build();
@@ -130,7 +131,7 @@ class C35aSupervisionOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, Language.ENGLISH);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(courtOrderMessage)
             .build();
@@ -154,7 +155,7 @@ class C35aSupervisionOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILDREN_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, Language.ENGLISH);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(courtOrderMessage)
             .build();
@@ -174,7 +175,7 @@ class C35aSupervisionOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, Language.ENGLISH);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(courtOrderMessage)
             .build();
@@ -195,7 +196,7 @@ class C35aSupervisionOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILDREN_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, Language.ENGLISH);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(courtOrderMessage)
             .build();

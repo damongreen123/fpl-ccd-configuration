@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.fpl.config.LocalAuthorityNameLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.enums.DocmosisTemplates;
 import uk.gov.hmcts.reform.fpl.enums.GeneratedOrderType;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.C21BlankOrderDocmosisParameters;
@@ -25,6 +26,7 @@ class C21BlankOrderDocumentParameterGeneratorTest {
     private static final GeneratedOrderType TYPE = GeneratedOrderType.BLANK_ORDER;
     private static final String TITLE = "Test title";
     private static final String DIRECTIONS = "Test directions";
+    public static final Language LANGUAGE = Language.ENGLISH;
     private static final CaseData CASE_DATA = CaseData.builder()
         .caseLocalAuthority(LA_CODE)
         .manageOrdersEventData(ManageOrdersEventData.builder()
@@ -49,7 +51,7 @@ class C21BlankOrderDocumentParameterGeneratorTest {
     void generate() {
         when(laNameLookup.getLocalAuthorityName(LA_CODE)).thenReturn(LA_NAME);
 
-        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA);
+        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA, LANGUAGE);
         assertThat(generatedParameters).isEqualTo(expectedCommonParameters().build());
     }
 
@@ -73,7 +75,7 @@ class C21BlankOrderDocumentParameterGeneratorTest {
             .orderTitle("Order")
             .build();
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
 
         assertThat(generatedParameters).isEqualTo(expectedParameters);
     }

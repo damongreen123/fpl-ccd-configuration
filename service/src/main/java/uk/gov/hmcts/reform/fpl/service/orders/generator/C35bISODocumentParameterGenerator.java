@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.fpl.enums.DocmosisTemplates;
 import uk.gov.hmcts.reform.fpl.enums.GeneratedOrderType;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.C35bInterimSupervisionOrderDocmosisParameters;
@@ -30,7 +31,7 @@ public class C35bISODocumentParameterGenerator implements DocmosisParameterGener
     }
 
     @Override
-    public DocmosisParameters generate(CaseData caseData) {
+    public DocmosisParameters generate(CaseData caseData, Language language) {
         ManageOrdersEventData manageOrdersEventData = caseData.getManageOrdersEventData();
 
         return C35bInterimSupervisionOrderDocmosisParameters.builder()

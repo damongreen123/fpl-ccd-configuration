@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.fpl.enums.DocmosisTemplates;
 import uk.gov.hmcts.reform.fpl.enums.GeneratedOrderType;
 import uk.gov.hmcts.reform.fpl.enums.orders.ManageOrdersEndDateType;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.C35bInterimSupervisionOrderDocmosisParameters;
@@ -28,6 +29,7 @@ class C35bISODocumentParameterGeneratorTest {
     private static final String FURTHER_DIRECTIONS = "FurtherDirections";
     private static final String ORDER_DETAILS = "OrderDetails";
     private static final ManageOrdersEndDateType ORDERS_END_DATE_TYPE = ManageOrdersEndDateType.END_OF_PROCEEDINGS;
+    private static final Language LANGUAGE = Language.ENGLISH;
 
     @Mock
     private OrderDetailsWithEndTypeGenerator orderDetailsWithEndTypeGenerator;
@@ -72,7 +74,7 @@ class C35bISODocumentParameterGeneratorTest {
                     + "the end of the proceedings or until a further order is made.").build(),
             caseData)).thenReturn(ORDER_DETAILS);
 
-        DocmosisParameters actual = underTest.generate(caseData);
+        DocmosisParameters actual = underTest.generate(caseData, LANGUAGE);
 
         assertThat(actual).isEqualTo(C35bInterimSupervisionOrderDocmosisParameters.builder()
             .orderTitle("Interim supervision order")

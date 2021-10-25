@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.service.ChildrenService;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.C45aParentalResponsibilityOrderDocmosisParameters;
@@ -44,6 +45,7 @@ class C45aParentalResponsibilityOrderDocumentParameterGeneratorTest {
 
     private static final String CHILDREN_ACT_FATHER = "Section 4(1) Children Act 1989";
     private static final String CHILDREN_ACT_SECOND_FEMALE_PARENT = "Section 4ZA Children Act 1989";
+    private static final Language LANGUAGE = Language.ENGLISH;
 
     @Mock
     private ChildrenService childrenService;
@@ -73,7 +75,7 @@ class C45aParentalResponsibilityOrderDocumentParameterGeneratorTest {
         when(childrenService.getSelectedChildren(caseData)).thenReturn(selectedChildren);
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn("Yes");
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(getOrderDetailsForChild())
             .orderByConsent("Yes")
@@ -91,7 +93,7 @@ class C45aParentalResponsibilityOrderDocumentParameterGeneratorTest {
         when(childrenService.getSelectedChildren(caseData)).thenReturn(selectedChildren);
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn("Yes");
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(getOrderDetailsForChildren())
             .orderByConsent("Yes")
@@ -109,7 +111,7 @@ class C45aParentalResponsibilityOrderDocumentParameterGeneratorTest {
         when(childrenService.getSelectedChildren(caseData)).thenReturn(selectedChildren);
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(null);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, Language.ENGLISH);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(getOrderDetailsForChild())
             .build();
@@ -126,7 +128,7 @@ class C45aParentalResponsibilityOrderDocumentParameterGeneratorTest {
         when(childrenService.getSelectedChildren(caseData)).thenReturn(selectedChildren);
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(null);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, Language.ENGLISH);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails(getOrderDetailsForChildren())
             .build();
@@ -150,7 +152,7 @@ class C45aParentalResponsibilityOrderDocumentParameterGeneratorTest {
         when(childrenService.getSelectedChildren(caseData)).thenReturn(selectedChildren);
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn("Yes");
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, Language.ENGLISH);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .childrenAct(CHILDREN_ACT_SECOND_FEMALE_PARENT)
             .orderDetails(getOrderDetailsForChild())
@@ -169,7 +171,7 @@ class C45aParentalResponsibilityOrderDocumentParameterGeneratorTest {
         when(childrenService.getSelectedChildren(caseData)).thenReturn(selectedChildren);
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn("Yes");
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, Language.ENGLISH);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .childrenAct(CHILDREN_ACT_FATHER)
             .orderDetails(getOrderDetailsForChild())

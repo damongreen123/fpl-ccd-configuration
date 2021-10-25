@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.fpl.config.LocalAuthorityNameLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.enums.C43OrderType;
 import uk.gov.hmcts.reform.fpl.enums.DocmosisTemplates;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.C43ChildArrangementOrderDocmosisParameters;
@@ -31,6 +32,7 @@ public class C43ChildArrangementOrderDocumentParameterGeneratorTest {
     private static final String DIRECTIONS = "Directions";
     private static final String FURTHER_DIRECTIONS = "Further directions";
     private static final String ORDER_TITLE = "Title";
+    private static final Language LANGUAGE = Language.ENGLISH;
 
     @Mock
     private LocalAuthorityNameLookupConfiguration laNameLookup;
@@ -60,7 +62,7 @@ public class C43ChildArrangementOrderDocumentParameterGeneratorTest {
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(CONSENT);
         when(c43ChildArrangementOrderTitleGenerator.getOrderTitle(any())).thenReturn(ORDER_TITLE);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
 
         assertThat(generatedParameters).isEqualTo(expectedCommonParameters()
             .orderHeader(ORDER_HEADER)
@@ -79,7 +81,7 @@ public class C43ChildArrangementOrderDocumentParameterGeneratorTest {
         when(orderMessageGenerator.getOrderByConsentMessage(any())).thenReturn(CONSENT);
         when(c43ChildArrangementOrderTitleGenerator.getOrderTitle(any())).thenReturn(ORDER_TITLE);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
 
         assertThat(generatedParameters).isEqualTo(expectedCommonParameters().build());
     }

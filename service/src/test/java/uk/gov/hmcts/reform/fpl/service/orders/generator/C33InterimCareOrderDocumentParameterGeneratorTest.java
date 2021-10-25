@@ -6,6 +6,7 @@ import uk.gov.hmcts.reform.fpl.config.LocalAuthorityNameLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.enums.DocmosisTemplates;
 import uk.gov.hmcts.reform.fpl.enums.GeneratedOrderType;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.ManageOrderDocumentService;
@@ -44,6 +45,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
     private static final String EXCLUSION_DETAILS = "reasons are x y and z";
     private static final String ORDER_HEADER = "Care order restrictions";
     private static final String ORDER_MESSAGE = "Care order message";
+    private static final Language LANGUAGE = Language.ENGLISH;
     private static final Map<String, String> CHILD_CONTEXT_ELEMENTS = new HashMap<>(Map.of(
         "childOrChildren", "child",
         "childIsOrAre", "is",
@@ -98,7 +100,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(courtOrderMessage)
             .build();
@@ -120,7 +122,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(false)
             .orderDetails(courtOrderMessage)
             .build();
@@ -141,7 +143,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILDREN_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(courtOrderMessage)
             .build();
@@ -162,7 +164,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILDREN_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(false)
             .orderDetails(courtOrderMessage)
             .build();
@@ -182,7 +184,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(courtOrderMessage)
             .build();
@@ -202,7 +204,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(false)
             .orderDetails(courtOrderMessage)
             .build();
@@ -222,7 +224,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILDREN_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(courtOrderMessage)
             .build();
@@ -242,7 +244,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILDREN_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(false)
             .orderDetails(courtOrderMessage)
             .build();
@@ -259,7 +261,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(courtOrderMessage)
             .build();
@@ -276,7 +278,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(false)
             .orderDetails(courtOrderMessage)
             .build();
@@ -293,7 +295,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(true)
             .orderDetails(courtOrderMessage)
             .build();
@@ -310,7 +312,7 @@ class C33InterimCareOrderDocumentParameterGeneratorTest {
 
         when(manageOrderDocumentService.commonContextElements(caseData)).thenReturn(CHILD_CONTEXT_ELEMENTS);
 
-        DocmosisParameters generatedParameters = underTest.generate(caseData);
+        DocmosisParameters generatedParameters = underTest.generate(caseData, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(false)
             .orderDetails(courtOrderMessage)
             .build();

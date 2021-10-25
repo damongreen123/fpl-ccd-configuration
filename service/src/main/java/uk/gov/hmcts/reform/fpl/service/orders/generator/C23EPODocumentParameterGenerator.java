@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.fpl.model.Address;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.selectors.ChildrenSmartSelector;
@@ -44,7 +45,7 @@ public class C23EPODocumentParameterGenerator implements DocmosisParameterGenera
     }
 
     @Override
-    public DocmosisParameters generate(CaseData caseData) {
+    public DocmosisParameters generate(CaseData caseData, Language language) {
         ManageOrdersEventData eventData = caseData.getManageOrdersEventData();
 
         String localAuthorityCode = caseData.getCaseLocalAuthority();

@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.fpl.config.LocalAuthorityNameLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.enums.DocmosisTemplates;
 import uk.gov.hmcts.reform.fpl.enums.GeneratedOrderType;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.C33InterimCareOrderDocmosisParameters;
@@ -31,7 +32,7 @@ public class C33InterimCareOrderDocumentParameterGenerator implements DocmosisPa
     }
 
     @Override
-    public DocmosisParameters generate(CaseData caseData) {
+    public DocmosisParameters generate(CaseData caseData, Language language) {
         ManageOrdersEventData eventData = caseData.getManageOrdersEventData();
 
         return C33InterimCareOrderDocmosisParameters.builder()

@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.fpl.model.Address;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.selectors.ChildrenSmartSelector;
@@ -55,6 +56,7 @@ class C23EPODocumentParameterGeneratorTest {
     public static final String EXCLUDE_PERSON = "Test user1";
     public static final Address REMOVAL_ADDRESS = Address.builder()
         .addressLine1("12 street").postcode("SW1").country("UK").build();
+    public static final Language LANGUAGE = Language.ENGLISH;
 
     @Mock
     private static Child CHILD;
@@ -91,7 +93,7 @@ class C23EPODocumentParameterGeneratorTest {
 
         when(childrenSmartSelector.getSelectedChildren(CASE_DATA)).thenReturn(selectedChildren);
 
-        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA);
+        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA, LANGUAGE);
         DocmosisParameters expectedParameters = expectedParameters(EPOType.REMOVE_TO_ACCOMMODATION, false, false);
 
         assertThat(generatedParameters).isEqualTo(expectedParameters);
@@ -108,7 +110,7 @@ class C23EPODocumentParameterGeneratorTest {
 
         when(childrenSmartSelector.getSelectedChildren(CASE_DATA)).thenReturn(selectedChildren);
 
-        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA);
+        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA, LANGUAGE);
         DocmosisParameters expectedParameters = expectedParameters(EPOType.PREVENT_REMOVAL, true, true);
 
         assertThat(generatedParameters).isEqualTo(expectedParameters);

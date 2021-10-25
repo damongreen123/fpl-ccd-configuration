@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.fpl.enums.GeneratedOrderType;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.selectors.ChildrenSmartSelector;
@@ -41,6 +42,7 @@ class C32CareOrderDocumentParameterGeneratorTest {
         .build();
     private static final String ORDER_HEADER = "Care order restrictions";
     private static final String ORDER_MESSAGE = "Care order message";
+    public static final Language LANGUAGE = Language.ENGLISH;
 
     @Mock
     private ChildrenSmartSelector childrenSmartSelector;
@@ -68,7 +70,7 @@ class C32CareOrderDocumentParameterGeneratorTest {
         when(childrenSmartSelector.getSelectedChildren(CASE_DATA)).thenReturn(selectedChildren);
         when(orderMessageGenerator.getCareOrderRestrictions(CASE_DATA)).thenReturn(ORDER_MESSAGE);
 
-        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA);
+        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails("It is ordered that the child is placed in the care of " + LA_NAME + ".")
             .build();
@@ -85,7 +87,7 @@ class C32CareOrderDocumentParameterGeneratorTest {
         when(childrenSmartSelector.getSelectedChildren(CASE_DATA)).thenReturn(selectedChildren);
         when(orderMessageGenerator.getCareOrderRestrictions(CASE_DATA)).thenReturn(ORDER_MESSAGE);
 
-        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA);
+        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters()
             .orderDetails("It is ordered that the children are placed in the care of " + LA_NAME + ".")
             .build();

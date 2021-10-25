@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.ChildParty;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisChild;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
@@ -30,7 +31,7 @@ public class A206PlacementOrderNotificationParameterGenerator implements Docmosi
     }
 
     @Override
-    public A206PlacementOrderNotificationDocmosisParameters generate(CaseData caseData) {
+    public A206PlacementOrderNotificationDocmosisParameters generate(CaseData caseData, Language language) {
         ManageOrdersEventData manageOrdersEventData = caseData.getManageOrdersEventData();
         UUID placementId = manageOrdersEventData.getManageOrdersChildPlacementApplication().getValueCodeAsUUID();
         Element<Child> child = placementService.getChildByPlacementId(caseData, placementId);

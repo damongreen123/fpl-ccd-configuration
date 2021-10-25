@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.fpl.config.LocalAuthorityNameLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.selectors.ChildrenSmartSelector;
 import uk.gov.hmcts.reform.fpl.service.ManageOrderDocumentService;
@@ -46,6 +47,7 @@ class C26SecureAccommodationOrderDocumentParameterGeneratorTest {
     private static final String CHILD_NOT_REPRESENTED_ADVISORY_TEXT = "The Court was satisfied that the child, not "
         + "being legally represented, has been informed of their right to apply for legal aid and having had the "
         + "opportunity to apply, had refused or failed to apply.";
+    public static final Language LANGUAGE = Language.ENGLISH;
 
     private LocalAuthorityNameLookupConfiguration mockLocalAuthorityNameLookupConfiguration;
     private ChildrenSmartSelector mockChildrenSmartSelector;
@@ -97,7 +99,7 @@ class C26SecureAccommodationOrderDocumentParameterGeneratorTest {
         when(mockChildrenSmartSelector.getSelectedChildren(caseData)).thenReturn(singletonList(testChild(BOY)));
 
         C26SecureAccommodationOrderDocmosisParameters result =
-            (C26SecureAccommodationOrderDocmosisParameters) underTest.generate(caseData);
+            (C26SecureAccommodationOrderDocmosisParameters) underTest.generate(caseData, LANGUAGE);
 
         assertThat(result.getChildrenAct()).isEqualTo(WELSH_ACT_NAME);
         assertThat(result.getOrderTitle()).isEqualTo(C26_SECURE_ACCOMMODATION_ORDER.getTitle());
@@ -129,7 +131,7 @@ class C26SecureAccommodationOrderDocumentParameterGeneratorTest {
         when(mockChildrenSmartSelector.getSelectedChildren(caseData)).thenReturn(singletonList(testChild(GIRL)));
 
         C26SecureAccommodationOrderDocmosisParameters result =
-            (C26SecureAccommodationOrderDocmosisParameters) underTest.generate(caseData);
+            (C26SecureAccommodationOrderDocmosisParameters) underTest.generate(caseData, LANGUAGE);
 
         assertThat(result.getChildrenAct()).isEqualTo(ENGLISH_ACT_NAME);
         assertThat(result.getOrderDetails()).isEqualTo(COURT_AUTHORISATION_PREFIX
@@ -156,7 +158,7 @@ class C26SecureAccommodationOrderDocumentParameterGeneratorTest {
         when(mockChildrenSmartSelector.getSelectedChildren(caseData)).thenReturn(singletonList(testChild(BOY)));
 
         C26SecureAccommodationOrderDocmosisParameters result =
-            (C26SecureAccommodationOrderDocmosisParameters) underTest.generate(caseData);
+            (C26SecureAccommodationOrderDocmosisParameters) underTest.generate(caseData, LANGUAGE);
 
         assertThat(result.getOrderDetails()).contains("secure accommodation for 6 months from the date of this order.");
     }
@@ -178,7 +180,7 @@ class C26SecureAccommodationOrderDocumentParameterGeneratorTest {
         when(mockChildrenSmartSelector.getSelectedChildren(caseData)).thenReturn(singletonList(testChild(BOY)));
 
         C26SecureAccommodationOrderDocmosisParameters result =
-            (C26SecureAccommodationOrderDocmosisParameters) underTest.generate(caseData);
+            (C26SecureAccommodationOrderDocmosisParameters) underTest.generate(caseData, LANGUAGE);
 
         assertThat(result.getOrderDetails()).contains("secure accommodation for 1 month from the date of this order.");
     }
