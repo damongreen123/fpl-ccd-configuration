@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.fpl.enums.docmosis.RenderFormat;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.common.DocmosisDocument;
 import uk.gov.hmcts.reform.fpl.model.common.DocumentReference;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.model.order.OrderSourceType;
@@ -32,6 +33,7 @@ class OrderCreationServiceTest {
     private static final String FILE_NAME = "mock_order.mock_format";
     private static final String DRAFT_FILE_NAME = "Preview order.pdf";
     private static final String MEDIA_TYPE = "mock/media_type";
+    public static final Language LANGUAGE = Language.ENGLISH;
 
     private final Order order = mock(Order.class);
     private final RenderFormat format = mock(RenderFormat.class);
@@ -53,7 +55,7 @@ class OrderCreationServiceTest {
 
     @Test
     void createDraftOrderDocument() {
-        when(documentGenerator.generate(order, caseData, OrderStatus.DRAFT, format)).thenReturn(DOCMOSIS_DOCUMENT);
+        when(documentGenerator.generate(order, caseData, OrderStatus.DRAFT, format, LANGUAGE)).thenReturn(DOCMOSIS_DOCUMENT);
         when(format.getMediaType()).thenReturn(MEDIA_TYPE);
         when(uploadService.uploadDocument(BYTES, DRAFT_FILE_NAME, MEDIA_TYPE)).thenReturn(UPLOADED_DOCUMENT);
 
@@ -63,7 +65,7 @@ class OrderCreationServiceTest {
     @ParameterizedTest
     @EnumSource(value = OrderStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "DRAFT")
     void createNonDraftOrderDocument(OrderStatus status) {
-        when(documentGenerator.generate(order, caseData, status, format)).thenReturn(DOCMOSIS_DOCUMENT);
+        when(documentGenerator.generate(order, caseData, status, format, LANGUAGE)).thenReturn(DOCMOSIS_DOCUMENT);
         when(order.fileName(format, manageOrdersEventData)).thenReturn(FILE_NAME);
         when(format.getMediaType()).thenReturn(MEDIA_TYPE);
         when(uploadService.uploadDocument(BYTES, FILE_NAME, MEDIA_TYPE)).thenReturn(UPLOADED_DOCUMENT);

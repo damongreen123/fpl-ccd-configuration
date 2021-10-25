@@ -66,12 +66,14 @@ public class SealedOrderHistoryService {
         List<Element<Child>> selectedChildren = childrenSmartSelector.getSelectedChildren(caseData);
         List<Element<Other>> selectedOthers = othersService.getSelectedOthers(caseData);
 
-        DocumentReference sealedPdfOrder = orderCreationService.createOrderDocument(caseData, OrderStatus.SEALED, PDF, Language.ENGLISH);
+        DocumentReference sealedPdfOrder = orderCreationService.createOrderDocument(caseData, OrderStatus.SEALED, PDF);
         // TODO check this - probably better to have an Optional somewhere
-        DocumentReference sealedPdfOrderTranslated = (caseData.getImageLanguage() == Language.WELSH) ?
-            orderCreationService.createOrderDocument(caseData, OrderStatus.SEALED, PDF, Language.WELSH)
-            : null;
-        DocumentReference plainWordOrder = orderCreationService.createOrderDocument(caseData, OrderStatus.PLAIN, WORD, Language.ENGLISH);
+        // Figure out if we can generate a translated order right now and not have to send off for translation
+        DocumentReference sealedPdfOrderTranslated = (caseData.getImageLanguage() == Language.WELSH
+            && orderCreationService.canCreateTranslatedOrder(caseData))
+                ? orderCreationService.createOrderDocument(caseData, OrderStatus.SEALED, PDF, Language.WELSH)
+                : null;
+        DocumentReference plainWordOrder = orderCreationService.createOrderDocument(caseData, OrderStatus.PLAIN, WORD);
 
         GeneratedOrder.GeneratedOrderBuilder generatedOrderBuilder = GeneratedOrder.builder()
             .orderType(manageOrdersEventData.getManageOrdersType().name()) // hidden field, to store the type

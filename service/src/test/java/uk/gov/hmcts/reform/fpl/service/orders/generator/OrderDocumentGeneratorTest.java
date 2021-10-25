@@ -5,6 +5,7 @@ import uk.gov.hmcts.reform.fpl.enums.OrderStatus;
 import uk.gov.hmcts.reform.fpl.enums.docmosis.RenderFormat;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.common.DocmosisDocument;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.document.DocumentGenerator;
 
@@ -23,6 +24,7 @@ class OrderDocumentGeneratorTest {
     private static final DocmosisDocument DOCMOSIS_DOCUMENT = mock(DocmosisDocument.class);
     private static final RenderFormat FORMAT = mock(RenderFormat.class);
     private static final OrderStatus STATUS = DRAFT;
+    private static final Language LANGUAGE = Language.ENGLISH;
 
     private final DocmosisParameterGenerator generator = mock(DocmosisParameterGenerator.class);
 
@@ -38,7 +40,7 @@ class OrderDocumentGeneratorTest {
     void generateWithNoGenerator() {
         when(generatorHolder.getTypeToGenerator()).thenReturn(Map.of());
 
-        assertThatThrownBy(() -> underTest.generate(ORDER, CASE_DATA, STATUS, FORMAT))
+        assertThatThrownBy(() -> underTest.generate(ORDER, CASE_DATA, STATUS, FORMAT, LANGUAGE))
             .isInstanceOf(UnsupportedOperationException.class)
             .hasMessage("Not implemented yet for order " + ORDER.name());
     }
@@ -46,9 +48,9 @@ class OrderDocumentGeneratorTest {
     @Test
     void generateWithGenerator() {
         when(generatorHolder.getTypeToGenerator()).thenReturn(Map.of(ORDER, generator));
-        when(documentGenerator.generateDocument(CASE_DATA, generator, FORMAT, STATUS)).thenReturn(DOCMOSIS_DOCUMENT);
+        when(documentGenerator.generateDocument(CASE_DATA, generator, FORMAT, STATUS, LANGUAGE)).thenReturn(DOCMOSIS_DOCUMENT);
 
-        assertThat(underTest.generate(ORDER, CASE_DATA, STATUS, FORMAT)).isEqualTo(DOCMOSIS_DOCUMENT);
+        assertThat(underTest.generate(ORDER, CASE_DATA, STATUS, FORMAT, LANGUAGE)).isEqualTo(DOCMOSIS_DOCUMENT);
     }
 
 }

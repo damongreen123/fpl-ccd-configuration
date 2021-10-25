@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.fpl.config.LocalAuthorityNameLookupConfiguration;
 import uk.gov.hmcts.reform.fpl.enums.DocmosisTemplates;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.HearingVenue;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
 import uk.gov.hmcts.reform.fpl.model.order.Order;
 import uk.gov.hmcts.reform.fpl.service.HearingVenueLookUpService;
@@ -29,6 +30,7 @@ public class C32bDischargeOfCareOrderDocumentParameterGeneratorTest {
     private static final String VENUE_NAME = "Venue";
     private static final String DIRECTIONS = "The Court discharges the care order made by Venue made on 1st June 2021.";
     private static final String FURTHER_DIRECTIONS = "Further test directions";
+    public static final Language LANGUAGE = Language.ENGLISH;
     private static final CaseData CASE_DATA = CaseData.builder()
         .caseLocalAuthority(LA_CODE)
         .manageOrdersEventData(ManageOrdersEventData.builder()
@@ -64,13 +66,13 @@ public class C32bDischargeOfCareOrderDocumentParameterGeneratorTest {
         when(hearingVenueLookUpService.getHearingVenue(VENUE_ID)).thenReturn(HEARING_VENUE);
         when(laNameLookup.getLocalAuthorityName(LA_CODE)).thenReturn(LA_NAME);
 
-        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA);
+        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA, LANGUAGE);
         assertThat(generatedParameters).isEqualTo(expectedCommonParameters());
     }
 
     @Test
     void template() {
-        assertThat(underTest.template()).isEqualTo(DocmosisTemplates.ORDER_V2);
+        assertThat(underTest.template()).isEqualTo(DocmosisTemplates.C32B);
     }
 
     private C32bDischargeOfCareOrderDocmosisParameters expectedCommonParameters() {

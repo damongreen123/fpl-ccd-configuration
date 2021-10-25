@@ -4,6 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 
 public class GenderDisplayFormatHelper {
 
+    private GenderDisplayFormatHelper() {
+    }
+
     private static final String DEFAULT_STRING = "-";
 
     public static String formatGenderDisplay(final String gender, final String genderIdentification) {

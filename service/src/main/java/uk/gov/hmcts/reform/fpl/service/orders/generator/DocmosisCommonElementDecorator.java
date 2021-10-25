@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
 import uk.gov.hmcts.reform.fpl.model.common.JudgeAndLegalAdvisor;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisChild;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisJudgeAndLegalAdvisor;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
@@ -36,11 +37,11 @@ public class DocmosisCommonElementDecorator {
     private final CaseDataExtractionService extractionService;
 
     public DocmosisParameters decorate(DocmosisParameters currentParameters, CaseData caseData,
-                                       OrderStatus status, Order orderType) {
+                                       OrderStatus status, Order orderType, Language language) {
         ManageOrdersEventData eventData = caseData.getManageOrdersEventData();
 
         List<Element<Child>> selectedChildren = childrenSmartSelector.getSelectedChildren(caseData);
-        List<DocmosisChild> children = extractionService.getChildrenDetails(selectedChildren, caseData.getImageLanguage());
+        List<DocmosisChild> children = extractionService.getChildrenDetails(selectedChildren, language);
 
         JudgeAndLegalAdvisor judgeAndLegalAdvisor = getSelectedJudge(
             caseData.getJudgeAndLegalAdvisor(), caseData.getAllocatedJudge()
@@ -56,11 +57,13 @@ public class DocmosisCommonElementDecorator {
             docmosisParametersBuilder.childrenAct(orderType.getChildrenAct());
         }
 
+        String courtName = extractionService.getCourtName(caseData);
+
         return docmosisParametersBuilder
             .familyManCaseNumber(caseData.getFamilyManCaseNumber())
             .ccdCaseNumber(formatCCDCaseNumber(caseData.getId()))
             .judgeAndLegalAdvisor(docmosisJudgeAndLegalAdvisor)
-            .courtName(extractionService.getCourtName(caseData))
+            .courtName(language == Language.WELSH ? convertCourtNameToWelsh(courtName) : courtName)
             .dateOfIssue(isBlank(dateOfIssue)
                 ? formatLocalDateToString(eventData.getManageOrdersApprovalDate(), DATE) : dateOfIssue)
             .children(children)
@@ -69,4 +72,10 @@ public class DocmosisCommonElementDecorator {
             .courtseal(SEALED == status ? DocmosisImages.COURT_SEAL.getValue(caseData.getImageLanguage()) : null)
             .build();
     }
+
+    // TODO - figure out a nicer way of fixing the family court name including English
+    public String convertCourtNameToWelsh(String courtName) {
+        return courtName.replace("Family Court sitting at", "Y Llys Teulu yn eistedd yn");
+    }
+
 }

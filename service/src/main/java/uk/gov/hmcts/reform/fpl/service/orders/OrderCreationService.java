@@ -29,7 +29,8 @@ public class OrderCreationService {
     private final UploadedOrderDocumentGenerator uploadedOrderGenerator;
     private final UploadDocumentService uploadService;
 
-    public DocumentReference createOrderDocument(CaseData caseData, OrderStatus status, RenderFormat format, Language language) {
+    public DocumentReference createOrderDocument(CaseData caseData, OrderStatus status, RenderFormat format,
+                                                 Language language) {
         ManageOrdersEventData manageOrdersEventData = caseData.getManageOrdersEventData();
         Order orderType = manageOrdersEventData.getManageOrdersType();
 
@@ -45,6 +46,12 @@ public class OrderCreationService {
         );
 
         return DocumentReference.buildFromDocument(document);
+    }
+
+    public boolean canCreateTranslatedOrder(CaseData caseData) {
+        ManageOrdersEventData manageOrdersEventData = caseData.getManageOrdersEventData();
+        Order orderType = manageOrdersEventData.getManageOrdersType();
+        return orderGenerator.canGenerateTranslatedOrder(orderType);
     }
 
     public DocumentReference createOrderDocument(CaseData caseData, OrderStatus status, RenderFormat format) {

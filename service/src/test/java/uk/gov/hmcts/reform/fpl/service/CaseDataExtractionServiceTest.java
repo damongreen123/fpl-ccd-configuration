@@ -123,14 +123,14 @@ class CaseDataExtractionServiceTest {
             .party(ChildParty.builder()
                 .firstName("John")
                 .lastName("Smith")
-                .gender("Male")
+                .gender("Boy")
                 .dateOfBirth(LocalDate.of(2020, 1, 1))
                 .build())
             .build());
 
         DocmosisChild expectedChild = DocmosisChild.builder()
             .name("John Smith")
-            .gender("Male")
+            .gender("Boy")
             .dateOfBirth("1 January 2020")
             .build();
 

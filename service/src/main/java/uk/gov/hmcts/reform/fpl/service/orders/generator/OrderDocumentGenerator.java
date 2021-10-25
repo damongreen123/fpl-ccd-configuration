@@ -19,7 +19,8 @@ public class OrderDocumentGenerator {
     private final DocumentMerger documentMerger;
     private final DocumentGenerator documentGenerator;
 
-    public DocmosisDocument generate(Order orderType, CaseData caseData, OrderStatus orderStatus, RenderFormat format, Language language) {
+    public DocmosisDocument generate(Order orderType, CaseData caseData, OrderStatus orderStatus, RenderFormat format,
+                                     Language language) {
         DocmosisParameterGenerator docmosisParameterGenerator = holder.getTypeToGenerator().get(orderType);
 
         if (docmosisParameterGenerator == null) {
@@ -37,6 +38,11 @@ public class OrderDocumentGenerator {
         }
 
         return docmosisDocument;
+    }
+
+    public boolean canGenerateTranslatedOrder(Order orderType) {
+        DocmosisParameterGenerator docmosisParameterGenerator = holder.getTypeToGenerator().get(orderType);
+        return docmosisParameterGenerator.template().getWelshTemplate().isPresent();
     }
 
 }

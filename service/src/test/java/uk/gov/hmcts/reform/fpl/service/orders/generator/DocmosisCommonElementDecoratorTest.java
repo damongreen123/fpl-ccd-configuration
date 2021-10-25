@@ -6,6 +6,7 @@ import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
 import uk.gov.hmcts.reform.fpl.model.common.JudgeAndLegalAdvisor;
+import uk.gov.hmcts.reform.fpl.model.configuration.Language;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisChild;
 import uk.gov.hmcts.reform.fpl.model.docmosis.DocmosisJudgeAndLegalAdvisor;
 import uk.gov.hmcts.reform.fpl.model.event.ManageOrdersEventData;
@@ -48,6 +49,7 @@ class DocmosisCommonElementDecoratorTest {
     private static final List<DocmosisChild> DOCMOSIS_CHILDREN = List.of(mock(DocmosisChild.class));
     private static final DocmosisParameters DOCMOSIS_PARAMETERS = C32CareOrderDocmosisParameters.builder().build();
     private static final Order ORDER_TYPE = mock(Order.class);
+    private static final Language LANGUAGE = Language.ENGLISH;
     private static final CaseData CASE_DATA = CaseData.builder()
         .familyManCaseNumber(FAM_MAN_CASE_NUM)
         .id(CASE_NUMBER)
@@ -70,6 +72,7 @@ class DocmosisCommonElementDecoratorTest {
         when(extractionService.getJudgeAndLegalAdvisor(JUDGE)).thenReturn(DOCMOSIS_JUDGE);
         when(childrenSmartSelector.getSelectedChildren(CASE_DATA)).thenReturn(CHILDREN);
         when(extractionService.getChildrenDetails(CHILDREN)).thenReturn(DOCMOSIS_CHILDREN);
+        when(extractionService.getChildrenDetails(CHILDREN, LANGUAGE)).thenReturn(DOCMOSIS_CHILDREN);
 
         when(ORDER_TYPE.getTitle()).thenReturn(TITLE);
         when(ORDER_TYPE.getChildrenAct()).thenReturn(CHILDREN_ACT);
@@ -77,7 +80,7 @@ class DocmosisCommonElementDecoratorTest {
 
     @Test
     void decorateDraft() {
-        DocmosisParameters decorated = underTest.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, DRAFT, ORDER_TYPE);
+        DocmosisParameters decorated = underTest.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, DRAFT, ORDER_TYPE, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(EXPECTED_APPROVAL_DATE)
             .draftbackground(WATERMARK)
             .build();
@@ -87,7 +90,7 @@ class DocmosisCommonElementDecoratorTest {
 
     @Test
     void decorateSealed() {
-        DocmosisParameters decorated = underTest.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, SEALED, ORDER_TYPE);
+        DocmosisParameters decorated = underTest.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, SEALED, ORDER_TYPE, LANGUAGE);
         DocmosisParameters expectedParameters = expectedCommonParameters(EXPECTED_APPROVAL_DATE)
             .courtseal(SEAL)
             .build();
@@ -105,7 +108,7 @@ class DocmosisCommonElementDecoratorTest {
             .build();
 
         DocmosisParameters decorated = underTest.decorate(
-            docmosisParametersWithIssueDate, CASE_DATA, SEALED, ORDER_TYPE);
+            docmosisParametersWithIssueDate, CASE_DATA, SEALED, ORDER_TYPE, Language.ENGLISH);
 
         DocmosisParameters expectedParameters = expectedCommonParameters(expectedDateOfIssue)
             .courtseal(SEAL)
@@ -120,7 +123,7 @@ class DocmosisCommonElementDecoratorTest {
             C32CareOrderDocmosisParameters.builder().childrenAct("Custom child act").build(),
             CASE_DATA,
             SEALED,
-            ORDER_TYPE);
+            ORDER_TYPE, Language.ENGLISH);
 
         assertThat(decorated.getChildrenAct()).isEqualTo("Custom child act");
     }

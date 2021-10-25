@@ -38,6 +38,7 @@ class DocumentGeneratorTest {
     private static final Order ORDER = Order.C32A_CARE_ORDER;
     private static final RenderFormat FORMAT = RenderFormat.PDF;
     private static final OrderStatus STATUS = SEALED;
+    private static final Language LANGUAGE = Language.ENGLISH;
 
     @Mock
     private DocmosisDocumentGeneratorService docmosisRenderer;
@@ -53,13 +54,13 @@ class DocumentGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        when(decorator.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, STATUS, ORDER)).thenReturn(DOCMOSIS_PARAMETERS);
+        when(decorator.decorate(DOCMOSIS_PARAMETERS, CASE_DATA, STATUS, ORDER, LANGUAGE)).thenReturn(DOCMOSIS_PARAMETERS);
         when(caseConverter.toMap(DOCMOSIS_PARAMETERS)).thenReturn(TEMPLATE_DATA);
-        when(docmosisRenderer.generateDocmosisDocument(TEMPLATE_DATA, DOCMOSIS_TEMPLATE, FORMAT, Language.ENGLISH))
+        when(docmosisRenderer.generateDocmosisDocument(TEMPLATE_DATA, DOCMOSIS_TEMPLATE, FORMAT, LANGUAGE))
             .thenReturn(DOCMOSIS_DOCUMENT);
         when(parameterGenerator.accept()).thenReturn(ORDER);
         when(parameterGenerator.template()).thenReturn(DOCMOSIS_TEMPLATE);
-        when(parameterGenerator.generate(CASE_DATA)).thenReturn(DOCMOSIS_PARAMETERS);
+        when(parameterGenerator.generate(CASE_DATA, LANGUAGE)).thenReturn(DOCMOSIS_PARAMETERS);
     }
 
     @Test

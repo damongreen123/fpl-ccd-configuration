@@ -15,7 +15,11 @@ import uk.gov.hmcts.reform.fpl.service.orders.docmosis.C32bDischargeOfCareOrderD
 import uk.gov.hmcts.reform.fpl.service.orders.docmosis.DocmosisParameters;
 import uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper;
 
-import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.DATE;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.DATE_WITH_ORDINAL_SUFFIX;
+import static uk.gov.hmcts.reform.fpl.utils.DateFormatterHelper.formatLocalDateTimeBaseUsingFormat;
 
 @Component
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -30,7 +34,7 @@ public class C32bDischargeOfCareOrderDocumentParameterGenerator implements Docmo
     }
 
     @Override
-    public DocmosisParameters generate(CaseData caseData) {
+    public DocmosisParameters generate(CaseData caseData, Language language) {
         ManageOrdersEventData eventData = caseData.getManageOrdersEventData();
 
         String localAuthorityCode = caseData.getCaseLocalAuthority();
@@ -42,7 +46,7 @@ public class C32bDischargeOfCareOrderDocumentParameterGenerator implements Docmo
 
         return C32bDischargeOfCareOrderDocmosisParameters.builder()
             .orderTitle(Order.C32B_DISCHARGE_OF_CARE_ORDER.getTitle())
-            .orderDetails(orderDetails(eventData, hearingVenue, caseData.getImageLanguage()))
+            .orderDetails(orderDetails(eventData, hearingVenue, language))
             .furtherDirections(eventData.getManageOrdersFurtherDirections())
             .localAuthorityName(localAuthorityName)
             .build();
@@ -55,8 +59,8 @@ public class C32bDischargeOfCareOrderDocumentParameterGenerator implements Docmo
 
     private String orderDetails(ManageOrdersEventData eventData, HearingVenue hearingVenue, Language language) {
 
-        String dischargeMessage = (language == Language.WELSH) ? "Mae’r Llys yn diddymu’r gorchymyn gofal a " +
-            "wnaethpwyd gan %s ar %s."
+        String dischargeMessage = (language == Language.WELSH) ? "Mae’r Llys yn diddymu’r gorchymyn gofal a "
+            + "wnaethpwyd gan %s ar %s."
             : "The Court discharges the care order made by %s made on %s.";
 
         String issuedCourt = hearingVenue.getVenue();
@@ -66,6 +70,14 @@ public class C32bDischargeOfCareOrderDocumentParameterGenerator implements Docmo
     }
 
     public String getIssuedDate(ManageOrdersEventData eventData, Language language) {
-        return DateFormatterHelper.formatLocalDateToString(eventData.getManageOrdersCareOrderIssuedDate(), DATE, language);
+        LocalDateTime issuedDate = LocalDateTime.of(eventData.getManageOrdersCareOrderIssuedDate(), LocalTime.MIDNIGHT);
+        int dayOfMonth = issuedDate.getDayOfMonth();
+        String ordinalSuffix = language == Language.WELSH
+            ? DateFormatterHelper.getDayOfMonthSuffixWelsh(dayOfMonth)
+            : DateFormatterHelper.getDayOfMonthSuffix(dayOfMonth);
+        String formatString = DateFormatterHelper.formatLocalDateTimeBaseUsingFormat(issuedDate,
+            DATE_WITH_ORDINAL_SUFFIX, language);
+
+        return String.format(formatString, ordinalSuffix);
     }
 }

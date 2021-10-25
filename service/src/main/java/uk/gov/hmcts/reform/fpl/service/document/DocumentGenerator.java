@@ -31,9 +31,10 @@ public class DocumentGenerator {
                                              RenderFormat format,
                                              OrderStatus orderStatus,
                                              Language language) {
-        DocmosisParameters customParameters = docmosisParameterGenerator.generate(caseData);
+        DocmosisParameters customParameters = docmosisParameterGenerator.generate(caseData, language);
         DocmosisParameters docmosisParameters =
-            decorator.decorate(customParameters, caseData, orderStatus, docmosisParameterGenerator.accept());
+            decorator.decorate(customParameters, caseData, orderStatus, docmosisParameterGenerator.accept(),
+                language);
         Map<String, Object> templateData = caseConverter.toMap(docmosisParameters);
 
         return docmosisDocumentGeneratorService.generateDocmosisDocument(

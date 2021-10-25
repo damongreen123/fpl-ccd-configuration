@@ -61,13 +61,7 @@ public class CaseDataExtractionService {
     private final CourtService courtService;
 
     public String getCourtName(CaseData caseData) {
-        String courtName = courtService.getCourtName(caseData);
-        return caseData.getImageLanguage() == Language.WELSH ? convertCourtNameToWelsh(courtName) : courtName;
-    }
-
-    // TODO - figure out a nicer way of fixing the family court name including English
-    public String convertCourtNameToWelsh(String courtName) {
-        return courtName.replace("Family Court sitting at", "Y Llys Teulu yn eistedd yn");
+        return courtService.getCourtName(caseData);
     }
 
     public String getHearingTime(HearingBooking hearingBooking) {
@@ -252,11 +246,12 @@ public class CaseDataExtractionService {
     }
 
     private DocmosisChild buildChild(ChildParty child, Language language) {
+        String gender = child.getGender() != null ? ChildGender.fromLabel(child.getGender()).getLabel(language) : null;
         return DocmosisChild.builder()
             .name(child.getFullName())
-            .gender(formatGenderDisplay(ChildGender.fromLabel(child.getGender()).getLabel(language), child.getGenderIdentification()))
+            .gender(gender)
             .dateOfBirth(ofNullable(child.getDateOfBirth())
-                .map(dob -> formatLocalDateToString(child.getDateOfBirth(), DATE, language))
+                .map(dob -> formatLocalDateToString(child.getDateOfBirth(), FormatStyle.LONG, language))
                 .orElse(null))
             .build();
     }

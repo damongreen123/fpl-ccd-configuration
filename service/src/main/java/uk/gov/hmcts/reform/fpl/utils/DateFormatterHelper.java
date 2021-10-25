@@ -26,6 +26,10 @@ public class DateFormatterHelper {
         return date.format(DateTimeFormatter.ofLocalizedDate(style).localizedBy(Locale.UK));
     }
 
+    public static String formatLocalDateToString(LocalDate date, FormatStyle style, Language language) {
+        return date.format(DateTimeFormatter.ofLocalizedDate(style).localizedBy(language.getLocale()));
+    }
+
     public static String formatLocalDateToString(LocalDate date, String format) {
         return date.format(DateTimeFormatter.ofPattern(format, Locale.UK));
     }
@@ -36,6 +40,10 @@ public class DateFormatterHelper {
 
     public static String formatLocalDateTimeBaseUsingFormat(LocalDateTime dateTime, String format) {
         return dateTime.format(DateTimeFormatter.ofPattern(format, Locale.UK));
+    }
+
+    public static String formatLocalDateTimeBaseUsingFormat(LocalDateTime dateTime, String format, Language language) {
+        return dateTime.format(DateTimeFormatter.ofPattern(format, language.getLocale()));
     }
 
     public static LocalDate parseLocalDateFromStringUsingFormat(String date, String format) {
@@ -72,6 +80,33 @@ public class DateFormatterHelper {
                 return "rd";
             default:
                 return "th";
+        }
+    }
+
+    public static String getDayOfMonthSuffixWelsh(int day) {
+        if (day <= 0 || day >= 32) {
+            throw new IllegalArgumentException("Illegal day of month: " + day);
+        }
+
+        if (day >= 21) {
+            return "ain";
+        }
+
+        switch (day) {
+            case 1:
+                return "af";
+            case 2:
+                return "ail";
+            case 3: case 4:
+                return "ydd";
+            case 5: case 6:
+                return "ed";
+            case 7: case 8: case 9: case 10: case 12: case 15: case 18: case 20:
+                return "fed";
+            case 11: case 13: case 14: case 16: case 17: case 19:
+                return "eg";
+            default:
+                return "";
         }
     }
 }
