@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.fpl.service.orders.history;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.fpl.enums.LanguageTranslationRequirement;
 import uk.gov.hmcts.reform.fpl.enums.OrderStatus;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
 import uk.gov.hmcts.reform.fpl.model.Child;
@@ -75,6 +76,9 @@ public class SealedOrderHistoryService {
                 : null;
         DocumentReference plainWordOrder = orderCreationService.createOrderDocument(caseData, OrderStatus.PLAIN, WORD);
 
+        // if we have further directions a translated document won't be fully translated -> don't want to save it yet
+        boolean hasFurtherInfo = caseData.getManageOrdersEventData().getManageOrdersFurtherDirections() != null;
+
         GeneratedOrder.GeneratedOrderBuilder generatedOrderBuilder = GeneratedOrder.builder()
             .orderType(manageOrdersEventData.getManageOrdersType().name()) // hidden field, to store the type
             .title(extraTitleGenerator.generate(caseData))
@@ -90,8 +94,11 @@ public class SealedOrderHistoryService {
             .specialGuardians(appointedGuardianFormatter.getGuardiansNamesForTab(caseData))
             .othersNotified(othersNotifiedGenerator.getOthersNotified(selectedOthers))
             .document(sealedPdfOrder)
-            .translatedDocument(sealedPdfOrderTranslated)
-            .translationRequirements(languageRequirementGenerator.translationRequirements(caseData))
+            .translatedDocument(hasFurtherInfo ? null : sealedPdfOrderTranslated)
+            .translationRequirements(sealedPdfOrderTranslated != null
+                ? (hasFurtherInfo ? LanguageTranslationRequirement.ENGLISH_TO_WELSH : LanguageTranslationRequirement.NO)
+                : languageRequirementGenerator.translationRequirements(caseData)
+            )
             .unsealedDocumentCopy(plainWordOrder);
 
         notificationDocumentService.createNotificationDocument(caseData)

@@ -29,6 +29,7 @@ public class C32bDischargeOfCareOrderDocumentParameterGeneratorTest {
     private static final String VENUE_ID = "1";
     private static final String VENUE_NAME = "Venue";
     private static final String DIRECTIONS = "The Court discharges the care order made by Venue made on 1st June 2021.";
+    private static final String DIRECTIONS_WELSH = "Mae’r Llys yn diddymu’r gorchymyn gofal a wnaethpwyd gan Venue ar 1af Mehefin 2021.";
     private static final String FURTHER_DIRECTIONS = "Further test directions";
     public static final Language LANGUAGE = Language.ENGLISH;
     private static final CaseData CASE_DATA = CaseData.builder()
@@ -71,6 +72,15 @@ public class C32bDischargeOfCareOrderDocumentParameterGeneratorTest {
     }
 
     @Test
+    void generateWelsh() {
+        when(hearingVenueLookUpService.getHearingVenue(VENUE_ID)).thenReturn(HEARING_VENUE);
+        when(laNameLookup.getLocalAuthorityName(LA_CODE)).thenReturn(LA_NAME);
+
+        DocmosisParameters generatedParameters = underTest.generate(CASE_DATA, Language.WELSH);
+        assertThat(generatedParameters).isEqualTo(expectedCommonWelshParameters());
+    }
+
+    @Test
     void template() {
         assertThat(underTest.template()).isEqualTo(DocmosisTemplates.C32B);
     }
@@ -79,6 +89,15 @@ public class C32bDischargeOfCareOrderDocumentParameterGeneratorTest {
         return C32bDischargeOfCareOrderDocmosisParameters.builder()
             .orderTitle(Order.C32B_DISCHARGE_OF_CARE_ORDER.getTitle())
             .orderDetails(DIRECTIONS)
+            .furtherDirections(FURTHER_DIRECTIONS)
+            .localAuthorityName(LA_NAME)
+            .build();
+    }
+
+    private C32bDischargeOfCareOrderDocmosisParameters expectedCommonWelshParameters() {
+        return C32bDischargeOfCareOrderDocmosisParameters.builder()
+            .orderTitle(Order.C32B_DISCHARGE_OF_CARE_ORDER.getTitle())
+            .orderDetails(DIRECTIONS_WELSH)
             .furtherDirections(FURTHER_DIRECTIONS)
             .localAuthorityName(LA_NAME)
             .build();
