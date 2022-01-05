@@ -204,4 +204,21 @@ public class PlacementEventData {
     @FieldsGroup(NOTICE_GROUP)
     @JsonDeserialize(using = YesNoDeserializer.class)
     private YesNo sendPlacementNoticeToAllRespondents;
+
+    @Temp
+    @FieldsGroup(NOTICE_GROUP)
+    private DocumentReference placementNotice;
+
+    @Temp
+    @FieldsGroup(NOTICE_GROUP)
+    private LocalDateTime placementNoticeDateTime;
+
+    @Temp
+    @FieldsGroup(NOTICE_GROUP)
+    private String placementNoticeDuration;
+
+    @Temp
+    @FieldsGroup(NOTICE_GROUP)
+    private final String placementNoticeVenue;
+
 }

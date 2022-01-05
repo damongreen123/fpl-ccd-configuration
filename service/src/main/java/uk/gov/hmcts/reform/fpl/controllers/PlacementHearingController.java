@@ -14,10 +14,10 @@ import uk.gov.hmcts.reform.ccd.client.model.CallbackRequest;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.fpl.enums.YesNo;
 import uk.gov.hmcts.reform.fpl.model.CaseData;
-import uk.gov.hmcts.reform.fpl.model.HearingBooking;
 import uk.gov.hmcts.reform.fpl.model.Placement;
 import uk.gov.hmcts.reform.fpl.model.common.Element;
 import uk.gov.hmcts.reform.fpl.model.common.dynamic.DynamicList;
+import uk.gov.hmcts.reform.fpl.model.event.PlacementEventData;
 import uk.gov.hmcts.reform.fpl.service.PlacementService;
 import uk.gov.hmcts.reform.fpl.service.RespondentService;
 import uk.gov.hmcts.reform.fpl.utils.CaseDetailsMap;
@@ -26,8 +26,9 @@ import uk.gov.hmcts.reform.fpl.utils.ElementUtils;
 import java.util.List;
 import java.util.UUID;
 
-import static java.util.Optional.ofNullable;
-import static uk.gov.hmcts.reform.fpl.utils.ElementUtils.getDynamicListSelectedValue;
+import static uk.gov.hmcts.reform.fpl.model.event.PlacementEventData.NOTICE_GROUP;
+import static uk.gov.hmcts.reform.fpl.model.event.PlacementEventData.PLACEMENT_GROUP;
+import static uk.gov.hmcts.reform.fpl.utils.CaseDetailsHelper.putFields;
 
 @Api
 @RestController
@@ -62,10 +63,22 @@ public class PlacementHearingController extends CallbackController {
         final CaseData caseData = getCaseData(caseDetails);
         final CaseDetailsMap caseProperties = CaseDetailsMap.caseDetailsMap(caseDetails);
 
-
+        final PlacementEventData eventData = placementService.preparePlacementFromExisting(caseData);
+        putFields(caseProperties, eventData, PLACEMENT_GROUP, NOTICE_GROUP);
 
         return respond(caseProperties);
+    }
 
+    @PostMapping("notice-details/mid-event")
+    public AboutToStartOrSubmitCallbackResponse handleNoticeDetails(@RequestBody CallbackRequest request) {
+        final CaseDetails caseDetails = request.getCaseDetails();
+        final CaseData caseData = getCaseData(caseDetails);
+        final CaseDetailsMap caseProperties = CaseDetailsMap.caseDetailsMap(caseDetails);
+
+        final PlacementEventData eventData = placementService.generateA92(caseData);
+        putFields(caseProperties, eventData, PLACEMENT_GROUP, NOTICE_GROUP);
+
+        return respond(caseProperties);
     }
 
     @PostMapping("/about-to-submit")
