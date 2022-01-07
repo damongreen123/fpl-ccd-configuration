@@ -93,6 +93,7 @@ public class PlacementService {
     private final RespondentService respondentService;
     private final DocmosisDocumentGeneratorService docmosisDocumentGeneratorService;
     private final UploadDocumentService uploadDocumentService;
+    private final HearingVenueLookUpService hearingVenueLookUpService;
 
     public PlacementEventData prepareChildren(CaseData caseData) {
 
@@ -136,9 +137,10 @@ public class PlacementService {
 
     public PlacementEventData preparePlacementFromExisting(CaseData caseData) {
         final PlacementEventData placementData = caseData.getPlacementEventData();
-        placementData.setPlacement(getPlacementById(caseData, caseData.getPlacementList().getValueCodeAsUUID()));
+        final Placement placement = getPlacementById(caseData, caseData.getPlacementList().getValueCodeAsUUID());
+        placementData.setPlacement(placement);
 
-        return flattenNotices(caseData);
+        return placementData;
     }
 
     public List<String> checkDocuments(CaseData caseData) {
@@ -208,15 +210,28 @@ public class PlacementService {
 
     public PlacementEventData generateA92(CaseData caseData) {
         final PlacementEventData placementEventData = caseData.getPlacementEventData();
+        final Optional<Element<Child>> child = caseData.getAllChildren().stream().filter(
+            element -> element.getId() == placementEventData.getPlacement().getChildId()
+        ).findFirst();
+
+        if (child.isEmpty()) {
+            throw new IllegalStateException("Placement child not present in case data");
+        }
+
+        final Child placementChild = child.get().getValue();
 
         DocmosisNoticeOfPlacementHearing hearing = DocmosisNoticeOfPlacementHearing.builder()
-            .child(DocmosisChild.builder().build())
+            .child(DocmosisChild.builder()
+                .name(placementChild.getParty().getFullName())
+                .dateOfBirth(formatLocalDateToString(placementChild.getParty().getDateOfBirth(), DATE))
+                .gender(placementChild.getParty().getGender())
+                .build())
             .courtName(caseData.getCourt().getName())
             .familyManCaseNumber(caseData.getFamilyManCaseNumber())
             .hearingDate(formatLocalDateTimeBaseUsingFormat(placementEventData.getPlacementNoticeDateTime(), DATE_TIME_WITH_ORDINAL_SUFFIX)
                 .formatted(getDayOfMonthSuffix(placementEventData.getPlacementNoticeDateTime().getDayOfMonth())))
             .hearingDuration(placementEventData.getPlacementNoticeDuration())
-            .hearingVenue(placementEventData.getPlacementNoticeVenue())
+            .hearingVenue(hearingVenueLookUpService.getHearingVenue(placementEventData.getPlacementNoticeVenue()).getVenue())
             .postingDate(formatLocalDateToString(time.now().toLocalDate(), DATE))
             .build();
 

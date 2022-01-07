@@ -54,6 +54,9 @@ public class Placement implements SelectableItem {
     @JsonProperty("placementRespondentsToNotify")
     private List<Element<Respondent>> placementRespondentsToNotify;
 
+    @JsonProperty("placementNotice")
+    private DocumentReference placementNotice;
+
     @JsonIgnore
     public Placement nonConfidential(boolean withNoticesResponses) {
 
